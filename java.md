@@ -112,7 +112,7 @@ v1=10 , v2=11
 if(v1>5 && v2>v1++) 执行后 v1=11
 if(v1<5 && v2>v1++) 执行后 v1=10
 区别就在于 后面的语句是否执行
- 
+
 
 ### 自加
 
@@ -148,4 +148,116 @@ case 4:
 给num传入一个值,case 1: ->如果 num == 1 则执行该case的代码块
 由于该case没有break,程序会接着执行case 2 和 case 3 直到case 3的break switch才结束
 
-## 
+## 访问级别修饰符
+
+决定其修饰的 类型/变量/方法 的作用范围 (可访问范围||可见范围)
+可见即可访问,不可见即不可访问
+
+### 顶级
+
+类/接口/枚举/注解/record 支持创建为顶级的独立源文件
+必须先创建以上类型 才能在以上文件里写 方法变量常量等
+
+- public 所有其它类可访问
+- package-private 仅包内可访问(就算是子包也不可以用)
+
+package级允许文件名与类名不同但是禁止使用,有歧义
+必须定义在类型内的,称呼为 Method方法
+可以脱离类型独立定义的 称呼为Function函数
+
+### 成员级
+
+声明在类型内部.可以是 类/接口/变量/常量/方法等
+
+- public 全局可访问
+- package-private 包内可访问
+- private 类型内可访问
+- protected 包和任意位置的子包类可以用
+
+### 方法
+
+#### 构成
+
+由 修饰符, 方法返回类型, 方法参数列表, 方法体 构成
+
+- 修饰符 public/private/static/final...
+- 方法返回类型 返回值的类型,没有返回值写void
+- 方法参数列表 ( type name) 没有参数时写 ()
+- 方法体 函数体
+
+方法必须以 动词 开始 驼峰式首字母小写,接形容词或者名词
+
+#### 方法签名
+
+方法签名是类中一个方法区别于另一个方法的特征
+由 方法名称 方法参数列表的参数类型决定
+与 修饰符 返回值类型 参数名称无关
+
+```
+public double calculate(double a, double b, int point)
+方法签名: calculate(double,double,int)
+public int calculate(double c, double d, int point)
+方法签名: calculate(double,double,int)
+它俩方法签名一样,无法编译
+```
+
+方法参数名称
+在作用范围内必须唯一,无论参数类型是否相同,参数名称不能相同.
+方法内的局部变量不能与方法参数名称相同
+(就是不能写函数,变量不能重名)
+
+```
+void setName(string num, int num){
+int num;
+}两个禁忌
+```
+
+#### 方法重载
+
+允许具有相同名称但是不同参数列表的方法存在
+即 只要方法签名不同,方法的名字是可以相同的
+
+```
+public void list(int groupId){}
+public void list(int groupId,int type){}
+public void list(int groupId,string name){}
+都可以的
+```
+
+#### 值传递
+
+8+1数据类型为值传递
+
+```java
+public static void main(String[] args){
+    String name = "java";
+    int index = 10;
+    getPrint(name,index);
+    System.out.println(name);
+    System.out.println(index);
+    return;
+}
+private static void getPrint(String name,int index){
+    System.out.println(name);
+    System.out.println(index);
+    name = "C++"
+    index = 5;
+    System.out.println(name);
+    System.out.println(index);
+    return;
+}
+```
+
+```
+结果
+java 10
+V++ 5
+java 10
+```
+
+ name和index 是 java 和 10
+传入getPrint后打印结果java,10
+在getPrint中修改值为c++,5
+结束方法后打印还是java和10
+说明 8+1类型是值传递
+
