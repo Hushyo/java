@@ -261,3 +261,160 @@ java 10
 结束方法后打印还是java和10
 说明 8+1类型是值传递
 
+**对象是引用传递**
+
+### 封装
+
+类中可以生命成员变量
+
+- public修饰的成员变量为公有成员变量,全局可访问
+- private修饰的成员变量,私有成员变量,仅能在类中访问
+
+```java
+public class Bicycle{
+	public int cadence = 0;
+	public int speed = 0;
+	public int gear = 0;
+}
+```
+
+Bicycle中声明了三个 int 类型的public 公共成员变量
+成员变量必须通过对象操作访问 
+Bicycle bicycle = new Bicycle();
+System.out.println(<font color = red>bicycle.cadence</font>) ;
+这是直接访问了对象中的属性数据.
+
+规范: 不要通过public暴露对象中的数据
+实体对象的属性必须用private封装起来,不能让外界直接访问 正确如下
+
+```java
+public class Bicycle{
+	private int cadence = 0;
+	private int speed = 0;
+	private int gear = 0;
+}
+```
+
+封装 对外隐藏功能实现的具体细节,并且隐藏对象中的数据信息.
+		 通过暴露方法/接口对外提供服务.
+那么外界如何获取信息?
+对成员变量的操作必须通过访问器**(getter/setter)**实现
+
+```java
+public class Bicycle{
+	private int cadence;
+	private int speed;
+	private int gear;
+    
+	public int getGear(){
+	return gear;
+    } //外界通过这个获得Bicycle对象的gear信息
+    public void setGear(int gear){
+        this.gear = gear;
+    }//外界通过这个修改Bicycle对象的gear信息
+}
+```
+
+对象每一个属性都需要设置对应的 getter 和 setter;
+
+> this. 表示当前对象中的东西,上文setter 参数名字 与 变量名字相同,用this区分它俩,this.gear就是对象中的属性gear.
+
+### 构造函数
+
+#### 什么是构造函数
+
+类的构造函数,像一个方法,但是没有返回类型. 方法名称 与 类 的名称一致;
+
+```
+public class Bicycle{
+	public Bicycle(){}
+}
+```
+
+可以通过 new 操作符 利用构造函数 创建一个类的对象
+
+```
+Bicycle bicycle = new Bicycle();
+```
+
+new的是什么?new的是Bicycle这个类吗?不是.类是不能new的
+它new的是构造函数 public Bicycle(){} 
+
+这里是无参构造函数,仅创建了对象,但是没有初始化对象属性.
+可以通过有参构造函数 创建并初始化对象属性.
+
+当类显式声明了有参构造函数时,编译器将不再自动创建无参构造函数
+没有显式声明有参构造函数时,编译器自动创建无参构造函数. ->不写无参构造函数时,new Bicycle()可以使用的原因
+
+类可以声明多个构造函数,但是构造函数的方法签名不能相同.
+
+```java
+public class Bicycle{
+	private int cadence;
+	private int speed;
+	private int gear;
+    
+	public Bicycle(int gear){
+        this.gear = gear;
+    }
+    public Bicycle(int speed){
+        this.speed = speed;
+    }//无法编译,因为两个构造函数方法签名相同
+}
+```
+
+就当第二个构造函数不存在,创建Bicycle对象的操作就变成了:
+
+```java
+Bicycle bicycle = new Bicycle(5);
+//这个 5 就是 bicycle 对象 gear的初始属性
+Bicycle bicycle = new Bicycle();
+//但是这样就不对了,因为无参构造函数不再自动创建了,真想用?自己声明;
+```
+
+#### 对象创建的过程
+
+- 声明
+- 实例化
+- 初始化
+
+声明:声明一个可以引用指定类型对象的变量
+Bicycle bicycle;//bicycle 可以接受Bicycle类型的对象
+**声明并不会创建一个对象**,必须为其分配一个地址
+实例化: new操作符为对象分配内存,并返回对象的内存地址给变量
+Bicycle bicycle = new 
+初始化: 利用构造函数完成对象的初始化
+Bicycle bicycle = new Bicycle(5)
+
+![](https://cdn.jsdelivr.net/gh/Hushyo/img@main/img/creat.png)
+
+创建一个对象,就是创建一个 类的实例 ,即 实例化一个类
+
+#### 对象引用传递
+
+```java
+public class Test {
+    public static void main(String[] args){
+        Bicycle bicycle = new Bicycle();
+        bicycle.setGear(5);//初始化bicycle的gear为 5
+        test(bicycle); 
+        System.out.println("离开方法后："+bicycle.getGear()); //如果是值传递,bicycle对象的gear仍是5
+    }
+    private static void test(Bicycle bicycle){
+        System.out.println("方法修改前："+bicycle.getGear());
+        bicycle.setGear(2);
+        System.out.println("方法修改后:"+bicycle.getGear());
+    }
+}
+/*结果:
+方法修改前：5
+方法修改后:2
+离开方法后：2
+说明 对象 是引用传递*/
+```
+
+### 导入
+
+想要使用其他包中的public类型,必须通过以下方式之一:
+
+- 
