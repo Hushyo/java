@@ -413,8 +413,49 @@ public class Test {
 说明 对象 是引用传递*/
 ```
 
-### 导入
+### 包的导入
 
 想要使用其他包中的public类型,必须通过以下方式之一:
 
-- 
+- 全限定性名称
+- 简单名称
+- 导入整个包
+
+#### 全限定名称
+
+public class Student{
+	private **com.example.clazz.Bicycle** bicycle;
+}
+
+把类的地址全写上,来使用类
+
+#### 简单名称
+
+在package之后 类型定义语句之前 通过 import 关键词引入类型后,直接通过类型名使用类
+
+package com.example.packagex;
+import **com.example.clazz.Bicycle;**
+public class Student{
+	private **Bicycle** bicycle;
+}
+
+#### 导入整个包
+
+用 * 号导入包中的所有类型
+
+import **com.example.clazz.*;**
+public class Student{
+	private **Bicycle** bicycle;
+}
+然后用类型名使用类
+
+>  当包的路径不同但是名称相同时,只有一个可以 简单名称使用类,其他的必须使用 全限定名称.
+> com.example.clazz.Bicycle 作用等于 Bicycle
+
+
+
+
+
+
+
+## 静态变量
