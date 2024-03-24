@@ -458,4 +458,101 @@ public class Student{
 
 
 
-## 静态变量
+## 静态
+
+### static method
+
+ **class** 是 method 的载体,一个 class 可以装两种 method
+ 一种是 静态method,另一种是非静态method
+简单来说, static method 是整个 class 共享的 method
+而 non-static method 是具体某个实例的 method
+method 前写了 static ,这个方法是静态method,不写就是非静态 method
+
+- 调用 非静态method,需要创建一个对象,然后 对象.method 才能使用
+  因此也叫 实例方法 instance method
+- 调用 静态method 任何时候都可以 classname.method 来使用
+  也就是ppt上所说的静态不与任何对象关联.(记住上面的不用管这个)
+
+```java
+public class Test {
+    static void staticprint(){
+        System.out.println("静态方法");
+    }
+    void nonstaticprint(){
+        System.out.println("动态方法");
+    }
+}
+public class Main {
+    public static void main(String[] args){
+        Test.staticprint();// 静态方法直接调用
+        //Test.nonstaticprint 是不可以调用的,编译器会建议把			  nonstaticprint前加static,改成静态方法
+        Test test = new Test();//非静态方法需要先创建对象
+        test.nonstaticprint();//然后借助对象调用
+        test.staticprint();//对象当然可以调用静态方法
+    }
+}
+```
+
+---
+
+
+
+### static variable
+
+也分为 static variable 和 instance variable
+static variable 是 整个 class 共享的变量
+不管是直接 类调用它 还是 对象调用它,大家都是共享的
+instance variable 是 具体实例的变量,只存在于某个具体对象内.
+
+```java
+public class Dish {
+    double salt;
+    static int count = 0;//静态变量
+    static double sumSalt = 0;//静态变量
+    Dish(double salt){
+        this.salt = salt;
+        count++;
+        sumSalt += salt;
+/*每次调用这个函数,这个Dish类的 count 就会加1,类的sumSalt就会加上Salt,使用类的 count 时,会接着上次的count用,
+d1用完count后是1,d2调用时count还是1,不会再初始化一次.
+具体实例也可以使用静态变量,正如 静态变量 是整个类共享的
+静态代码块仅初始化一次,仅运行一次*/.
+    }
+}
+public class Test {
+    public static void main(String[] args) {
+        Dish d1 = new Dish(0.1);
+        Dish d2 = new Dish(0.4);
+        Dish d3 = new Dish(0.5);
+        System.out.println("一共做了"+Dish.count +"盘菜");
+        System.out.println("一共用了"+Dish.sumSalt+"g盐");
+		System.out.println("一共用了"+d3.sumSal+"g盐");
+    }
+}
+```
+
+但是 类的私有静态变量,只有类的对象可以调用,不能通过类调用它.
+规范:私有静态变量依然禁止对外直接暴露,必须对外提供访问的公有静态方法
+类中 实例方法 单项访问 方法静态成员
+		 静态方法 无法访问 实例级成员
+
+![staticvariable](https://cdn.jsdelivr.net/gh/Hushyo/img@main/img/staticvariable.png)
+
+> 静态方法任何时刻都能用,而实例成员必须定义才会存在,因此静态方法无法访问可能不存在的成员 即 静态方法无法访问实例成员
+
+---
+
+
+
+### 静态内部类
+
+在 类 里面再定义一个 静态类
+虽然是定义在 类 的里面,但是规则上跟外部类一样,是完全独立的,只是代码层面是嵌套的.静态的内部类仍然无法调用外部类的实例级对象
+
+
+
+
+
+
+
+## 枚举
