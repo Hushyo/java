@@ -7,7 +7,7 @@
 
 ---
 
-#### 类 命名:
+#### 类 命名: 
 
 <font color=blue>驼峰式命名</font>,每个单词仅首字母大写,其余小写
 一般是单数,工具类可以用复数
@@ -16,7 +16,7 @@
 
 #### 包 命名:
 
-使用全部小写的英文单数名词
+使用<font color=blue>全部小写</font>的英文单数名词
 package 声明包的路径名称
 必须放在源文件的顶部,源文件的位置必须与包声明的路径相同
 
@@ -24,6 +24,7 @@ package 声明包的路径名称
 
 #### 变量 命名:
 
+<font color=blue>小 驼峰</font>(先小写,再驼峰)
 首个单词的首字母小写,其余单词首字母大写
 
 > string userName = "Petter"
@@ -458,7 +459,7 @@ public class Student{
 
 
 
-## 静态
+## 静态static
 
 ### static method
 
@@ -555,4 +556,128 @@ public class Test {
 
 
 
-## 枚举
+## 枚举enum
+
+特殊的数据类型,定义一组预定义的**枚举**常量列表.限制用户输入
+是顶级类型,允许创建独立源文件
+比如 四级
+
+```java
+public enum Seaon{
+ SPRING,SUMMER,AUTUMN,WINTER
+}
+//使用:Season.SPRING
+//enum是一个类型,所以可以定义变量
+//定义的enum类型变量只能接受预设值的枚举值,输入其他的无法编译  由此
+private static String getEnumSession(Season season){
+    String msg = "";
+    switch(season){//season只能传入上面预设的值,这便是用法.
+        case SPRING:
+            msg = "春天";
+            break;
+        case SUMMER:
+            msg = "夏天";
+            break;
+        case AUTUMN:
+            msg = "秋天";
+            break;
+        case WINTER:
+            msg = "冬天";
+            break;
+    }
+    return msg;
+}
+//再举一个 学生的性别
+public class Student{  
+    Gender gender;
+   	String name;
+    public Student(String name,Gender gender){
+        this.name = name;
+        this.gender = gender;
+    }
+	punlic enum Gender{
+    	MALE,FEMALE
+	}
+}
+```
+
+> 都是常量,所以大写
+> 逗号分开,不要分号结尾
+
+java 给了月份枚举 Month.······
+
+## 接口interface
+
+### 解释
+
+接口是互交的协议,也是定制的规范
+
+> A产的电脑能插B生产的U盘,就是因为它们遵循同一套规范
+
+接口中声明 抽象的方法
+为什么说是抽象的方法?因为它们只声明了方法.没有说怎么实现
+因此定义接口时只需要定义方法,不需要具体实现
+
+> public int addNum(int a, int b);这便是仅声明了方法,没有实现,所以它是抽象的方法
+
+接口也是顶级的,可以单独创建源文件.
+
+### 定义
+
+接口 由 修饰符,关键字 interface 接口名称 ,(继承接口列表) 接口主体 组成
+支持 public/package-private修饰
+一个接口可以继承任意数量的接口
+
+```java
+public interface GroupInterface extends Interface1, Interface2, Interface3
+//修饰符		关键字		接口名称				继承列表
+```
+
+接口内可以包含抽象方法,默认方法和静态方法
+			抽象方法 仅声明.不实现,参数列表括号后直接分号.
+接口中所有抽象/默认/静态方法 都是隐式 public 所以 public 可以省略
+接口 抽象方法隐式有 public abstract 修饰
+接口中可以声明常量,常量有隐式 public static final 修饰
+规范:接口中的方法/常量,均省略多余的修饰符.
+		 接口命名 名词或者名词短语,形容能力的以形容词命名;形容服务的声明服务类型后缀
+
+> UserService,InitService...
+
+### 实现类
+
+既然声明了方法,总得有人实现这些方法.
+定义一个类,通过 implements 关键词声明 实现指定接口 用来实现声明中的方法,实现类
+实现类实现多个接口时,用逗号分隔接口列表
+实现接口,就必须实现接口中的所有抽象方法,少一个都不行
+记得在方法上方写一行@override 表明这个方法不是类里自带的.而是接口里的抽象方法
+
+```java
+public interface Playable{
+	void sing(String songName);
+}
+public interface Learnable{
+    void read(String bookName);
+    int test(String courseName);
+}
+public class Undergraduate implements Learnable,Playable{
+    private String name;
+    public Undergraduate(String name){
+        this.name = name;
+    }
+    @override
+    public void read(String bookName){
+        System.out.println(bookName);
+    }
+    @override
+    public int test(String courseName){
+        System.out.println(courseName);
+        return 0;
+    }
+    @override
+    public void song(String songName){
+        System.out.println(songName);
+    }
+}
+```
+
+> 实现类本质上还是一个类,也可以当正常类一样声明自己的属性并使用.
