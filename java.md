@@ -681,3 +681,17 @@ public class Undergraduate implements Learnable,Playable{
 ```
 
 > 实现类本质上还是一个类,也可以当正常类一样声明自己的属性并使用.
+
+### 使用
+
+定义了一个接口,就是定义了一个可以引用的类型.像类一样,可以在任何需要的地方作为类型使用
+但是接口创建对象的方法有点特殊
+
+```
+Learnable learnable = new new什么?
+new Learnable()吗?显然不行,Learnable里面根本没有具体的方法,new出来也用不了.
+Learnable learnable = new Playable();
+接口创建对象,new的是接口的实现类.这样才能使用接口里的方法.
+同时这个对象也可以拥有实现类里面的属性.
+```
+
