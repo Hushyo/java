@@ -622,9 +622,16 @@ java 给了月份枚举 Month.······
 
 接口也是顶级的,可以单独创建源文件.
 
+
+
+- 抽象出相同的状态(属性),设计为实现类
+- 抽象出相同的行为(方法),设计为接口
+
+- 接口以行为能力分类
+
 ### 定义
 
-接口 由 修饰符,关键字 interface 接口名称 ,(继承接口列表) 接口主体 组成
+接口 由 **修饰符,关键字 interface 接口名称 ,(继承接口列表) 接口主体** 组成
 支持 public/package-private修饰
 一个接口可以继承任意数量的接口
 
@@ -635,21 +642,26 @@ public interface GroupInterface extends Interface1, Interface2, Interface3
 
 接口内可以包含抽象方法,默认方法和静态方法
 			抽象方法 仅声明.不实现,参数列表括号后直接分号.
-接口中所有抽象/默认/静态方法 都是隐式 public 所以 public 可以省略
-接口 抽象方法隐式有 public abstract 修饰
-接口中可以声明常量,常量有隐式 public static final 修饰
-规范:接口中的方法/常量,均省略多余的修饰符.
-		 接口命名 名词或者名词短语,形容能力的以形容词命名;形容服务的声明服务类型后缀
+
+- 接口中所有抽象/默认/静态方法 都是隐式 public 所以 public 可以省略
+- 接口 抽象方法隐式有 public abstract 修饰
+- 接口中可以声明常量,常量有隐式 public static final 修饰
+- 规范:接口中的方法/常量,均省略多余的修饰符.
+-  接口命名 名词或者名词短语,形容能力的以形容词命名;形容服务的声明服务类型后缀
 
 > UserService,InitService...
 
 ### 实现类
 
-既然声明了方法,总得有人实现这些方法.
-定义一个类,通过 implements 关键词声明 实现指定接口 用来实现声明中的方法,实现类
-实现类实现多个接口时,用逗号分隔接口列表
-实现接口,就必须实现接口中的所有抽象方法,少一个都不行
-记得在方法上方写一行@override 表明这个方法不是类里自带的.而是接口里的抽象方法
+> 既然声明了方法,总得有人实现这些方法.
+
+定义一个类, 通过 implements 关键词声明 实现类
+用来实现声明中的方法,
+
+- 实现类 implements 多个接口时,用逗号分隔接口列表
+
+- 实现接口,就必须实现接口中的所有抽象方法,少一个都不行
+- 记得在方法上方写一行@override 表明这个方法不是类里自带的.而是接口里的抽象方法
 
 ```java
 public interface Playable{
@@ -682,16 +694,247 @@ public class Undergraduate implements Learnable,Playable{
 
 > 实现类本质上还是一个类,也可以当正常类一样声明自己的属性并使用.
 
+
+
+如果在接口里添加新method,该接口的所有实现类都要对该method进行实现.
+虽然它们可以用同一个实现方法,但是实现类很多时,挨个添加挺麻烦的.
+
+java8之前,接口中只能有抽象方法,不能具体实现.
+java8及之后,接口里也可以有具体实现的方法了.
+允许通过 default 关键词在接口中声明方法的具体实现(可以放心添加新method啦)
+
+```java
+public interface Learnable{
+	void read();
+	default void study(){
+	//这个 study 就是 default 声明实现的方法,所有实现了该接口的类都可以直接调用study
+	}
+}
+```
+
+
+
+java8之后 允许在接口中定义 静态方法.
+所有静态方法都可以  类型.方法 使用
+接口的静态现在也可以 接口.方法 使用啦,无需任何实现类
+
+```java
+public interface Learnable{
+	int STUDY_TIME=8;
+	void read();
+	int test();
+	static int getLeftTime(int hours){
+	return hours - STUDY_TIME;
+	}
+}
+```
+
+> 定义静态方法无需添加 default 关键词 
+
 ### 使用
 
 定义了一个接口,就是定义了一个可以引用的类型.像类一样,可以在任何需要的地方作为类型使用
 但是接口创建对象的方法有点特殊
 
-```
+```java
 Learnable learnable = new new什么?
-new Learnable()吗?显然不行,Learnable里面根本没有具体的方法,new出来也用不了.
+new Learnable()//吗?显然不行,Learnable里面根本没有具体的方法,new出来也用不了.
 Learnable learnable = new Playable();
-接口创建对象,new的是接口的实现类.这样才能使用接口里的方法.
-同时这个对象也可以拥有实现类里面的属性.
+//接口创建对象,new的是接口的实现类.这样才能使用接口里的方法.
+//同时这个对象也可以拥有实现类里面的属性. //后面的学习证明这是错的 对象learnable只能访问接口里的东西
+//后面再具体解释
 ```
+
+## 继承Inheritance
+
+### 须知
+
+- **Subclass** 子类(派生类,扩展类)
+- **Superclass** 超类(基类) 
+  子类的 直接超类 习惯上称为 父类
+- 每个类 能且只能 直接继承自一个父类(单继承)
+- 没有显示声明继承时,每个类都隐式继承自 Object 类
+  A显式继承自B,B显式继承自C C没有显式继承, 那么C隐式继承自 Object
+  so java中所有类都是 Object 的子类
+
+**继承的意义**:想创建一个新类,当前存在一个包含需要代码的类时,可以直接从现有的类中派生出一个新的类,重用现有类的成员,无需重新编写.
+许多语言有更为灵活的 Mix-in 即保持了代码的重用性,又降低了耦合性. 但是java没有.别想了
+
+---
+
+子类继承超类所有的public / protected成员/变量/方法
+子类可以声明子类自有的新属性和新方法
+
+### Keyword
+
+- **this** 指向当前对象的引用
+
+- **super** 代表当前类的超类.
+
+  - 可以通过 **super** 调用超类的 **public / protected** 成员  超累的 private 用不了,private仅类内可用
+  - 可以通过 **super** 调用超类构造函数
+  - 不能理解为指向超类的引用,虽然实例化会调用超类构造函数,但是不会创建超类对象
+
+  
+
+```java
+//Bird是Animal的子类
+//Animal有方法move
+public class Bird extends Animal {
+ move();
+ super.move();
+ //两者等价
+}
+```
+
+> 在子类,超类的方法没有名称冲突时,可以直接使用超类中的方法,无无需声明 super.
+
+
+
+### 子类实例化
+
+子类必须满足超类的特性.子类的构造函数必须把超类也构造上
+
+```java
+public class User{
+	public user(){
+	System.out.println("User");
+	}
+}
+public class Teacher extends User{
+	public Teacher(){
+	System.out.println("Teacher");
+	}
+}
+Teacher t = new Teacher();
+//结果 
+//User
+//Teacher
+```
+
+为什么会这样?User哪来的?
+构造子类对象时,会先调用超类的构造函数,之后再调用自己的构造函数.
+
+```java
+public class Animal implements Movable{
+    private String name;
+    public Animal (String name){
+        this.name = name;
+    }
+}
+public class Bird extends Animal implements Flyable {
+   private String color;
+   public Bird(String name,String color){
+//两个参数的构造函数,一个参数为超类属性,且超类提供了构造函数,因此可以通过超类封装一个属性,再自己初始化一个属性
+        super(name);//由于超类没有无参构造函数,必须调用超类的有参构造函数
+        this.color = color;
+   }
+}
+```
+
+在构造函数中,通过super调用超类的构造函数语句 必须位于构造函数的第一行
+先把超类构造出来 才能在超类的基础上添加子类属性构造出来子类.
+调用super是为了完成本类继承自超类的属性的初始化,并不会创建超类对象
+
+### 重写override
+
+支持在子类中声明一个与超类中方法签名相同的新的实例方法.override覆写超类方法.
+override的方法签名必须与被覆写的一模一样.(不然就不能叫做覆写了)
+
+```
+超类 有 move(){sout("move fast")}
+子类 覆写: @override
+		 public void move(){
+		 sout("move low")
+		 }
+那么子类的对象使用move,输出的是 move low
+```
+
+覆写仅要求方法签名一样,说明什么?说明可以改变返回类型.
+新的返回类型 ''小于等于'(子类的意思--目前理解)' 超类要求的类型
+
+```
+超类方法返回类型是 Movable 超类要求方法必须范围具有Movable能力的对象
+子类覆写方法返回类型可以为 Bird 重写改变类型,支持重写为任何实现了 Movable 能力的类型
+```
+
+超类方法为基本数据类型时,禁止改变
+
+重写方法的访问范围,必须大于等于超类声明范围
+
+```
+超类是protected,子类必须大于等于这个
+可以是public,可以是protected,不能是private或其他比超类声明的访问范围小的
+```
+
+
+
+### 类型转换
+
+相关的不同类型间的转换,是多态的表现形式
+Bird继承自Animal以及Object,因此Bird是Animal类型,也是Object类型.但是反过来不能确定
+
+- 允许将一种类型转换为其继承/实现的另一种类型,称为**上转型** (隐式转换,上转型是可以自动发生的)
+
+```
+Bird bird = new bird(xxx);
+Animal animal = bird;
+Object obj = bird;
+bird,animal,obj的类型都是Bird.
+```
+
+> Animal animal = bird;
+> 等号左边变量的类型取决于等号右边,跟声明无关.
+> 等号左边的声明限制对象可以表现出什么特性/行为(能使用什么方法)
+
+> bird可以使用方法fly.
+> animal的类型虽然也是Bird,但是不能使用方法fly
+> 因为Animal里面没有fly 所以 animal不能使用fly. Animal就是限制了bird中方法的使用
+
+变量的实际类型由等号右边决定.
+变量能使用的方法由左边声明决定.
+
+- 下转型 需要显式声明强制类型转换
+
+```java
+Bird bird = new bird(xxx);
+Animal animal = bird;
+Object obj = bird;  可以
+
+Bird bird2 = (Bird)obj;//obj的声明类型是Object,下转型需要显式声明
+bird2.fly() //没问题---obj引用对象类型是Bird,所以可以给Bird类型的bird2,且可以使用fly
+```
+
+```java
+Animal animal = new Animal(xxx); 
+Bird bird2 = (Bird)animal; //animal的类型是 Animal,下转型需要显式声明
+编译出错--------bird2引用的对象类型是Animal,不具有Bird的一些属性,所以不能编译
+    如果子类没有新的属性,那么编译可以通过.
+```
+
+>  写的时候编译器不会报错,只有在运行的时候才会报错.
+
+- 隐式的上转型. 子类一定有超类的特性,自动类型转换
+- 显式的下转型. 超类不一定有子类的特性,运行时才知道对错
+
+声明的变量类型仅约束行为(限制方法的使用),不影响方法的实现.
+
+```
+Animal 和 Bird 都有 method move,在Bird中覆写method move.
+Bird bird = new Bird(xxx);
+Animal animal = bird;
+bird.move() -> bird move 而不是 animal move
+方法的实现还是Bird中的方法,而不是animal中的方法,因为bird是Bird类型的对象.
+```
+
+### 另外
+
+接口无法实例化.
+声明的接口类型变量,是其实际引用对象的类型.
+它永远都不能是它声明的接口类型.只能是接口中其中一个实现类的类型.
+
+Animal 实现 接口 Movable .
+Movable movable = new Animal();
+
+变量 movable 实际类型是 Animal,但是由于声明限制,movable 只能表现出Movable类型的能力.
 
