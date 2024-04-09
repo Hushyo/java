@@ -1,18 +1,20 @@
 ## 规范
 
+<font color=0327ff> 规范色</font>
+
 ### 命名:
 所有 **包/类/接口/方法/参数/变量** 的命名必须使用 
 有意义且无歧义的 英文单词或其缩写
 禁止中文,拼音以及中英混合
 
----
+
 
 #### 类 命名: 
 
 <font color=blue>驼峰式命名</font>,每个单词仅首字母大写,其余小写
 一般是单数,工具类可以用复数
 
----
+
 
 #### 包 命名:
 
@@ -20,16 +22,18 @@
 package 声明包的路径名称
 必须放在源文件的顶部,源文件的位置必须与包声明的路径相同
 
----
+
 
 #### 变量 命名:
 
 <font color=blue>小 驼峰</font>(先小写,再驼峰)
 首个单词的首字母小写,其余单词首字母大写
 
+
+
 > string userName = "Petter"
 
----
+
 
 #### 合法的标识符:
 
@@ -37,17 +41,21 @@ package 声明包的路径名称
 后续字符可以是字母,数字以及 _ 不支持其他字符
 但是为了规范: 不用 \$ 与 _ 开头
 
+
+
 > \$count _count count\$ count_\$ 合法但是不要用
 
----
+
 
 #### 数字字面量:
 支持用下划线 _ 分隔,提高代码可读性
 编译时会把 _ 忽略
 
+
+
 > creditCardNumber = 1234_567_89
 
----
+
 
 #### 常量 :
 所有字母大写且用 _ 分隔单词 
@@ -55,7 +63,7 @@ final
 
 > final int NUM_GEAR = 6
 
----
+
 
 ### long,double,float
 
@@ -65,10 +73,10 @@ final
 
 > long creditCardNumber = 12344456L
 > long num = 123L
->
-> 不用 L 结尾也不会报错,但是要规范,得加上
 
----
+不用 L 结尾也不会报错,但是要规范,得加上
+
+
 
 #### float
 
@@ -77,7 +85,7 @@ float 以 f/F 结尾,必须以 f/F 结尾
 
 >  float num=1.23F
 
----
+
 
 #### double
 
@@ -87,7 +95,7 @@ double 以 d/D 结尾,也可以不要
 > double num = 1.23
 > dounle num = 1.23D
 
----
+
 
 ## Base
 
@@ -186,13 +194,12 @@ package级允许文件名与类名不同但是禁止使用,有歧义
 - 方法参数列表 ( type name) 没有参数时写 ()
 - 方法体 函数体
 
-方法必须以 动词 开始 驼峰式首字母小写,接形容词或者名词
+<font color=0327ff>方法小驼峰，必须以动词开始，接形容词或者名词</font>
 
 #### 方法签名
 
 方法签名是类中一个方法区别于另一个方法的特征
-由 方法名称 方法参数列表的参数类型决定
-与 修饰符 返回值类型 参数名称无关
+方法签名由**方法名称 参数列表的参数类型**决定，与**修饰符 返回值类型 参数名称**无关
 
 ```
 public double calculate(double a, double b, int point)
@@ -215,15 +222,18 @@ int num;
 
 #### 方法重载
 
-允许具有相同名称但是不同参数列表的方法存在
-即 只要方法签名不同,方法的名字是可以相同的
+- 重载发生在一个类中，同名的方法具有不同的参数列表。
+- 有不同的参数列表才能算作重载方法。
+- 重载方法可以改变返回类型、访问修饰符。
+  但是仅改变这俩不算重载方法
 
-```
+```java
 public void list(int groupId){}
-public void list(int groupId,int type){}
+public int list(int groupId,int type){}
 public void list(int groupId,string name){}
-都可以的
 ```
+
+
 
 #### 值传递
 
@@ -247,22 +257,18 @@ private static void getPrint(String name,int index){
     System.out.println(index);
     return;
 }
-```
-
-```
+/*
 结果
-java 10
-V++ 5
-java 10
-```
-
- name和index 是 java 和 10
-传入getPrint后打印结果java,10
-在getPrint中修改值为c++,5
-结束方法后打印还是java和10
+java 10  name和index 是 java 和 10 传入getPrint后打印结果java,10
+C++ 5 在getPrint中 改java为c++,改index为5
+java 10 结束方法后打印还是java和10 
 说明 8+1类型是值传递
+*/ 
+```
 
 **对象是引用传递**
+
+
 
 ### 封装
 
@@ -424,30 +430,40 @@ public class Test {
 
 #### 全限定名称
 
+```java
 public class Student{
-	private **com.example.clazz.Bicycle** bicycle;
+	private com.example.clazz.Bicycle bicycle;
 }
+```
 
-把类的地址全写上,来使用类
+类的全限定名称 其实就是类的目录地址
 
 #### 简单名称
 
-在package之后 类型定义语句之前 通过 import 关键词引入类型后,直接通过类型名使用类
+在package之后 类型定义语句之前 
+通过 import 关键词导入，导入后通过类型名使用类
 
+```java
 package com.example.packagex;
-import **com.example.clazz.Bicycle;**
+import com.example.clazz.Bicycle;
 public class Student{
-	private **Bicycle** bicycle;
+	private Bicycle bicycle;
 }
+```
 
-#### 导入整个包
+
+
+#### 整个包
 
 用 * 号导入包中的所有类型
 
-import **com.example.clazz.*;**
+```java
+import com.example.clazz.;
 public class Student{
-	private **Bicycle** bicycle;
+	private Bicycle bicycle;
 }
+```
+
 然后用类型名使用类
 
 >  当包的路径不同但是名称相同时,只有一个可以 简单名称使用类,其他的必须使用 全限定名称.
@@ -463,16 +479,17 @@ public class Student{
 
 ### static method
 
- **class** 是 method 的载体,一个 class 可以装两种 method
- 一种是 静态method,另一种是非静态method
-简单来说, static method 是整个 class 共享的 method
-而 non-static method 是具体某个实例的 method
-method 前写了 static ,这个方法是静态method,不写就是非静态 method
+ **class** 是 method 的载体。
+一个 class 可以装两种 method，一种是 静态method，另一种是非静态method。
+static method 是整个 class 共享的 method
+non-static method 是具体某个实例的 method
+method 前写了 static ，这个方法是静态method，不写就是非静态 method
 
-- 调用 非静态method,需要创建一个对象,然后 对象.method 才能使用
+- 调用 非静态method，需要创建一个对象，然后 对象.method 才能使用
   因此也叫 实例方法 instance method
 - 调用 静态method 任何时候都可以 classname.method 来使用
   也就是ppt上所说的静态不与任何对象关联.(记住上面的不用管这个)
+- 静态方法可以直接 点 出来，非静态方法只能通过对象 点 出来
 
 ```java
 public class Test {
@@ -499,6 +516,9 @@ public class Main {
 
 
 ### static variable
+
+静态变量也是可以直接点出来，不同地方点出来的是同一个变量
+而非静态方法只能通过对象点出来，而点出来的这个变量只属于这个对象
 
 也分为 static variable 和 instance variable
 static variable 是 整个 class 共享的变量
@@ -541,7 +561,7 @@ public class Test {
 
 > 静态方法任何时刻都能用,而实例成员必须定义才会存在,因此静态方法无法访问可能不存在的成员 即 静态方法无法访问实例成员
 
----
+
 
 
 
@@ -549,6 +569,10 @@ public class Test {
 
 在 类 里面再定义一个 静态类
 虽然是定义在 类 的里面,但是规则上跟外部类一样,是完全独立的,只是代码层面是嵌套的.静态的内部类仍然无法调用外部类的实例级对象
+
+
+
+
 
 
 
@@ -667,16 +691,25 @@ new B(new(A)) 先加载类B,加载一遍静态代码块. 然后要调用B的构�
 ## 枚举enum
 
 特殊的数据类型,定义一组预定义的**枚举**常量列表.限制用户输入
-是顶级类型,允许创建独立源文件
-比如 四级
+
+enum 是一个类型, 可以定义变量
+定义的 enum 类型变量 只能接受 enum常量列表 里的值，其他的值无法输入，也就无法编译.
+
+- 顶级类型
+  允许创建独立源文件
+- 内容都是常量（全部大写）
+- 每一个常量都有隐式修饰符 public static final 确保 枚举中的常量具有公共，静态，不可改变的特性.
+- 逗号隔开，不要分号结尾.
+
+比如 四季
+
+> java 给了月份枚举 Month.······
 
 ```java
 public enum Seaon{
  SPRING,SUMMER,AUTUMN,WINTER
 }
 //使用:Season.SPRING
-//enum是一个类型,所以可以定义变量
-//定义的enum类型变量只能接受预设值的枚举值,输入其他的无法编译  由此
 private static String getEnumSession(Season season){
     String msg = "";
     switch(season){//season只能传入上面预设的值,这便是用法.
@@ -704,85 +737,106 @@ public class Student{
         this.gender = gender;
     }
 	punlic enum Gender{
-    	MALE,FEMALE
+    	MALE,FEMALE//那么Gender类型的变量只能接受 MALE 或者 FEMALE，其他的值接受不了
 	}
 }
 ```
 
-> 都是常量,所以大写
-> 逗号分开,不要分号结尾
 
-java 给了月份枚举 Month.······
 
-## 抽象の类&接口
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 抽象类和接口
 
 ### 接口
 
-#### 解释
+接口是互交的协议，也是定制的规范，A产的电脑能插B生产的U盘，就是因为它们遵循同一套规范
 
-接口是互交的协议,也是定制的规范
+接口声明抽象方法（仅声明方法，不实现方法）
+public int addNum(int a, int b);   这便是仅声明了方法,没有实现,所以它是抽象的方法
 
-> A产的电脑能插B生产的U盘,就是因为它们遵循同一套规范
+- 接口 由 **修饰符, interface 名称 ,(继承接口列表) 主体** 组成
+  支持 public/package-private修饰
 
-接口中声明 抽象的方法
-为什么说是抽象的方法?因为它们只声明了方法.没有说怎么实现
-因此定义接口时只需要定义方法,不需要具体实现
+  ```java
+  public interface GroupInterface extends Interface1, Interface2, Interface3{int addNum(int a, int b);}
+  //修饰符				名称				继承列表									主体
+  ```
 
-> public int addNum(int a, int b);这便是仅声明了方法,没有实现,所以它是抽象的方法
+- 接口也是顶级的,可以单独创建源文件.
 
-接口也是顶级的,可以单独创建源文件.
+- 接口可以继承接口，一个接口可以继承任意数量的接口，接口设计出来就是为了被继承的
+
+- 接口内可以包含 **抽象方法，默认方法， 静态方法 和常量**
+  接口中所有方法都有隐式public修饰，其中抽象方法具有隐式public abstract修饰
+  常量有隐式public static final修饰
+  隐式修饰，代表这些 public 可写可不写，写了不错，不写编译器自动补全。
+
+- 规范:接口中的方法/常量，省略多余的修饰符。
+- 接口命名 名词或者名词短语,形容能力的以形容词命名；形容服务的声明服务类型后缀 UserService,InitService...
 
 
 
-- 抽象出相同的状态(属性),设计为实现类
-- 抽象出相同的行为(方法),设计为接口
 
-- 接口以行为能力分类
 
-#### 定义
 
-接口 由 **修饰符,关键字 interface 接口名称 ,(继承接口列表) 接口主体** 组成
-支持 public/package-private修饰
-一个接口可以继承任意数量的接口
 
-```java
-public interface GroupInterface extends Interface1, Interface2, Interface3
-//修饰符		关键字		接口名称				继承列表
-```
 
-接口内可以包含抽象方法,默认方法和静态方法
-			抽象方法 仅声明.不实现,参数列表括号后直接分号.
 
-- 接口中所有抽象/默认/静态方法 都是隐式 public 所以 public 可以省略
-- 接口 抽象方法隐式有 public abstract 修饰
-- 接口中可以声明常量,常量有隐式 public static final 修饰
-- 规范:接口中的方法/常量,均省略多余的修饰符.
--  接口命名 名词或者名词短语,形容能力的以形容词命名;形容服务的声明服务类型后缀
 
-> UserService,InitService...
+
+
 
 #### 实现类
 
 > 既然声明了方法,总得有人实现这些方法.
 
-定义一个类, 通过 implements 关键词声明 实现类
-用来实现声明中的方法,
+定义一个类，通过 implements 关键词继承接口，这个类就是实现类
 
-- 实现类 implements 多个接口时,用逗号分隔接口列表
-
-- 实现接口,就必须实现接口中的所有抽象方法,少一个都不行
-- 记得在方法上方写一行@override 表明这个方法不是类里自带的.而是接口里的抽象方法
+- 实现类 implements 多个接口时，用逗号分隔接口列表
+- 实现接口，就必须实现接口中的所有抽象方法，少一个都不行
+- 实现方法是重写，用@override声明重写。
+- 实现类本质上还是一个类，也可以当正常类一样声明自己的属性，创建自己的对象···
+- 如果在接口里添加新method，该接口的所有实现类都要对该method进行实现。
 
 ```java
 public interface Playable{
 	void sing(String songName);
-}
+}//接口1
 public interface Learnable{
     void read(String bookName);
     int test(String courseName);
-}
-public class Undergraduate implements Learnable,Playable{
-    private String name;
+}//接口2
+public class Undergraduate implements Learnable,Playable{//继承两个接口
+    private String name;//可以正常声明自己的属性
     public Undergraduate(String name){
         this.name = name;
     }
@@ -802,22 +856,22 @@ public class Undergraduate implements Learnable,Playable{
 }
 ```
 
-> 实现类本质上还是一个类,也可以当正常类一样声明自己的属性并使用.
+
+
+**接口中的方法不需要手动写 public ，因为有隐式 public**
 
 
 
-如果在接口里添加新method,该接口的所有实现类都要对该method进行实现.
-虽然它们可以用同一个实现方法,但是实现类很多时,挨个添加挺麻烦的.
+java8之前,接口中只能有抽象方法。
 
-java8之前,接口中只能有抽象方法,不能具体实现.
-java8及之后,接口里也可以有具体实现的方法了.
-允许通过 default 关键词在接口中声明方法的具体实现(可以放心添加新method啦)
+java8及之后,接口里也可以有具体实现的方法了。通过 default 关键词在接口中声明方法的具体实现 (可以放心添加新method) 
+默认方法干什么的？可以把它当作接口的非静态方法。
 
 ```java
 public interface Learnable{
 	void read();
 	default void study(){
-	//这个 study 就是 default 声明实现的方法,所有实现了该接口的类都可以直接调用study
+	 System.out.println("study");//这个 study 就是 default 声明实现的方法,所有实现了该接口的类都可以直接调用study
 	}
 }
 ```
@@ -841,30 +895,47 @@ public interface Learnable{
 
 > 定义静态方法无需添加 default 关键词 
 
+
+
 #### 使用
 
-定义了一个接口,就是定义了一个可以引用的类型.像类一样,可以在任何需要的地方作为类型使用
-但是接口创建对象的方法有点特殊
+定义了一个接口,就是定义了一个可以引用的类型.
+像类一样,可以在任何需要的地方作为类型使用
+接口无法实例化，创建对象的方法有点特殊：
+		首先要new一个接口实现类的对象，
+		然后接口声明一个引用变量对该对象引用
 
 ```java
 Learnable learnable = new new什么?
-new Learnable()//吗?显然不行,Learnable里面根本没有具体的方法,new出来也用不了.
+new Learnable()
+//无法编译,Learnable里面根本没有具体的方法,无法实例化
 Learnable learnable = new Playable();
 //接口创建对象,new的是接口的实现类.这样才能使用接口里的方法.
-//同时这个对象也可以拥有实现类里面的属性. //后面的学习证明这是错的 对象learnable只能访问接口里的东西
-//后面再具体解释
+//同时这个对象也可以拥有实现类里面的属性.
+//注意是对象可以拥有其他属性，而变量learnable只能用声明类型里的东西
 ```
+
+
 
 ### 抽象类
 
-抽象类可以声明抽象的方法(跟接口一样),也可以声明普通的方法,普通方法可以被子类继承使用
+抽象类可以声明抽象的方法(跟接口一样)，也可以声明普通的方法。
+普通方法可以被子类继承使用
 
-抽象类无法被实例化,但是可以被继承使用. 可以声明子类共有的属性,并且可以提供构造函数给子类用.
-继承了抽象类的子类,必须实现抽象类中所有的抽象方法. 否则该子类也必须声明为抽象类
+> 注意抽象类里面没有隐式 public abstract 
+> 需要手动添加声明这是抽象方法
 
-抽象类可以实现接口,而无需实现接口中的所有方法,未实现的抽象方法交给子类实现
+- **抽象类无法被实例化**，但是可以被继承使用。
+  可以声明属性，并且可以提供构造函数给子类用。
+- 继承了抽象类的非抽象子类，必须实现抽象类中所有的抽象方法。
+  即 如果子类也是抽象类，那么不必实现超类的方法
 
-抽象类可以继承非抽象类的普通类
+- 抽象类不必实现接口中的所有方法。
+  未实现的抽象方法交给子类实现
+  子类可以中介调用超类中的方法。
+- 子类无法继承超类private成员,但是可以通过 getter/setter 方法访问超类的属性(如果提供)
+
+- 抽象类可以继承非抽象类的普通类
 
 ```java
 public abstract class Organism{
@@ -880,22 +951,20 @@ public abstract class Organism{
 Organism org = new Organism("asd")//出错
 ```
 
-子类继承抽象的超类,子类可以中介调用超类中的方法.同样的,子类必须实现超类中未实现的方法.
-
-
-
 
 
 
 
 ### 匿名内部类
 
-接口不同的实现类可以提供不同的实现,如何让一个类的不同对象提供不同的实现?
+接口可以有多个实现类，不同的实现类可以提供不同的实现方法。
+那么如何让同一个实现类的不同对象提供不同的实现?
 
-匿名类/匿名内部类
-匿名内部类能够同时 声明和创建 一个实现类和对象,它是动态创建的,没有名字.
-适合于声明使用一次的不会被复用的类.
-匿名类也是一个类,也可以拥有自己的属性和方法
+**匿名类/匿名内部类**
+匿名内部类能够同时 声明和创建 一个实现类和对象。
+它是动态创建的,没有名字。
+适合于声明使用一次的不会被复用的类。
+匿名类也是一个类,也可以拥有自己的属性和方法。
 
 #### 接口使用
 
@@ -992,20 +1061,17 @@ A a = new 匿名类 把实例化的子类对象上转型给 a
 
 ---
 
-子类继承超类所有的public / protected 成员/变量/方法
-		并且可以直接调用超类中的静态 成员/变量/方法(public / protected)
-子类可以声明子类自有的新属性和新方法
-
-### Keyword
+- 子类继承超类所有的public/protected成员（变量，方法）
+  并且可以直接调用超类中的public/protected静态成员(变量，方法）
+  子类不能访问超类的private成员
+- 子类可以声明子类自有的新属性和新方法
 
 - **this** 指向当前对象的引用
 
 - **super** 代表当前类的超类.
-
   - 可以通过 **super** 调用超类的 **public / protected** 成员  超累的 private 用不了,private仅类内可用
   - 可以通过 **super** 调用超类构造函数
   - 不能理解为指向超类的引用,虽然实例化会调用超类构造函数,但是不会创建超类对象
-
   
 
 ```java
@@ -1020,11 +1086,11 @@ public class Bird extends Animal {
 
 > 在子类,超类的方法没有名称冲突时,可以直接使用超类中的方法,无无需声明 super.
 
-
-
 ### 子类实例化
 
-子类必须满足超类的特性.子类的构造函数必须把超类也构造上
+子类必须满足超类的特性。子类的构造函数必须把超类也构造上
+
+创建子类对象时，会首先调用超类的构造函数。
 
 ```java
 public class User{
@@ -1046,6 +1112,9 @@ Teacher t = new Teacher();
 为什么会这样?User哪来的?
 构造子类对象时,会先调用超类的构造函数,之后再调用自己的构造函数.
 
+子类就是在超类的地基上盖楼
+想要盖楼时，要先把地基打上，才能接着往上面盖
+
 ```java
 public class Animal implements Movable{
     private String name;
@@ -1063,41 +1132,21 @@ public class Bird extends Animal implements Flyable {
 }
 ```
 
-在构造函数中,通过super调用超类的构造函数语句 必须位于构造函数的第一行
+在构造函数中，通过super调用超类的构造函数语句必须位于构造函数的第一行
 先把超类构造出来 才能在超类的基础上添加子类属性构造出来子类.
 调用super是为了完成本类继承自超类的属性的初始化,并不会创建超类对象
 
 ### 重写override
 
 支持在子类中声明一个与超类中方法签名相同的新的实例方法.
-@override 覆写超类方法.(隐藏超类方法)
-override的方法签名必须与被覆写的一模一样.(不然就不能叫做覆写了)
-隐藏静态方法时,无需@override注解修饰 
 
-```
-超类 有 move(){sout("move fast")}
-子类 覆写: @override
-		 public void move(){
-		 sout("move low")
-		 }
-那么子类的对象使用move,输出的是 move low
-```
+- @override 覆写超类方法.(隐藏超类方法)
+  隐藏静态方法时，无需@override注解修饰 
 
-覆写仅要求方法签名一样,说明什么?说明可以改变返回类型.(但是提问 能不能改变返回类型,答案是不可以)
-新的返回类型 ''小于等于' (子类的意思--目前理解)' 超类要求的类型
-
-```
-超类方法返回类型是 Movable 超类要求方法必须范围具有Movable能力的对象
-子类覆写方法返回类型可以为 Bird 重写改变类型,支持重写为任何实现了 Movable 能力的类型
-```
-
-> 超类方法 返回值为基本数据类型时,禁止改变
->
-> 重写方法的访问范围, 必须大于等于超类声明范围
-> 超类是protected,子类必须大于等于这个
-> 可以是public,可以是protected,不能是private或其他比超类声明的访问范围小的
-
-
+- 重写的方法必须具有**相同的方法签名和返回值类型**。
+- 重写方法的访问权限不能比父类中被重写方法的访问权限更低。
+  超类是protected,子类访问范围必须大于等于protected
+  可以是public,可以是protected,不能是private或其他比超类声明的访问范围小的
 
 **final修饰的方法无法被重写**
 
@@ -1170,29 +1219,12 @@ bird.move() -> bird move 而不是 animal move
 Animal 实现 接口 Movable .
 Movable movable = new Animal();
 
-变量 movable 实际类型是 Animal,但是由于声明限制,movable 只能表现出Movable类型的能力.
+变量 movable 实际类型是 Animal
+但是由于声明限制，movable 只能表现出Movable类型的能力。
 
-### Summary
 
-- 子类可以声明子类自有的 新属性 和 新方法
-  子类继承超类所有 public/protect 成员(变量/方法). 可以直接用,当作自己的属性就行 
-  子类无法继承超类private成员,但是可以通过 getter/setter 方法访问超类的属性(如果提供)
 
-- 隐藏超类方法
-  子类声明与超类中方法签名相同的实例方法时,要用@override
-  子类声明与超类中方法签名相同的静态方法时,不用@override
-
-- 创建子类对象,必然调用超类的构造函数.
-  编写子类构造函数时,通过关键字 super 显式调用超类构造函数
-  if public Animal(int a){···}       super(100)=Animal(100)
-
-- 抽象类和接口无法实例化
-  接口和抽象类都 可以有多个实现类
-  抽象类可以
-
----
-
-## 封装类&String
+## 封装&String
 
 ### 说明
 
@@ -1450,3 +1482,62 @@ java15以后,可以输出代码块了,关键词 """ """ 三个双引号括起来
 ![QQ图片20240405215242](E:/PS/08stu/QQ%E5%9B%BE%E7%89%8720240405215242.png)
 
 > 如何输出百分号%?  用百分号转义百分号 , \ 不能用来转义百分号
+
+---
+
+
+
+## 集合
+
+### 解释
+
+将许多元素组合后曾一个单一单元的容器对象，可用于存储/检索/操作/传输/聚合数据
+
+Collection(接口)，表示一组被称为元素的对象
+Collection\<E>接口，用于描述最具通用性的集合，也包含了最具通用性的集合操作方法
+
+Collection接口均继承自Iterable接口，即所有集合类型均支持foreach循环语句
+
+### 方法
+
+|                 Method                 |        Operation         |
+| :------------------------------------: | :----------------------: |
+|           boolean   add(E,e)           |        添加元素e         |
+|    boolean   addAll(Colletion\<E>c)    |        添加集合c         |
+|          boolean   remove(e)           |        删除元素e         |
+|  boolean   removeAll(Colletion\<E>c)   |        删除集合c         |
+|              void clear()              |           清空           |
+|         boolean    contains(e)         |    判断是否包含元素e     |
+| boolean   containsAll(Collection\<E>c) |    判断是否包含集合c     |
+|          boolean   isEmpty()           |        判断是否空        |
+|              int   size()              |         集合长度         |
+|          T[]  toArray(T[] a)           | 将集合转化为指定类型数组 |
+|        Iterator\<E> iterator()         |        获取迭代器        |
+
+**\<E>** 泛型. (表示可以是任何类型)
+		创建集合时,必须将泛型具体化为一个  引用类型
+		有助于编译器编译时检测,减少运行时错误
+
+那么为什么不声明为Object类?
+所有类都是Object类的子类,那么声明Object跟没声明一样
+集合不关心里面塞了什么,但是我们关心.我们声明类型后,这个集合只放这个
+
+### List\<E>
+
+有序,允许包含重复元素的集合.
+除了继承自Collection的方法,还提供了位置索引的操作方法
+
+|         Method          | Operation |
+| :---------------------: | :-------: |
+| void add(int index,E e) |   插入    |
+|  E set(int index,E e)   |   替换    |
+|    E get(int index)     |   获取    |
+|   E remove(int index)   |   移除    |
+|           ···           |    ···    |
+
+#### ArrayList &LinkedList
+
+List集合的基本实现类有 ArrayList 和 LinkedList
+
+- ArrayList 基于对象数组数据结构实现 
+- LinkedList 基于双向链表数据结构实现
