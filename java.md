@@ -1,4 +1,4 @@
-## 规范&点子
+## 规范CC
 
 <font color=0327ff> 规范色</font>
 
@@ -65,9 +65,9 @@ final
 
 
 
-### long,double,float
+### ldf
 
-#### long
+long
 
 长整型 long 的数值要以 L 结尾 
 
@@ -76,154 +76,20 @@ final
 
 不用 L 结尾也不会报错,但是要规范,得加上
 
-
-
-#### float
+float
 
 float 以 f/F 结尾,必须以 f/F 结尾
 浮点型判断大小 只能用 >= 或 <= 不要用 ==
 
 >  float num=1.23F
 
-
-
-#### double
+double
 
 double 以 d/D 结尾,也可以不要
 默认的double  类型允许不声明后缀
 
 > double num = 1.23
 > dounle num = 1.23D
-
-
-
-### 点子
-
-1. 8+1都是值传递,而不是引用传递(地址不共享).
-   对象是引用传递
-2. 用判断符判断 8 时 返回值为 Boolean 
-3. 垃圾收集器不会回收没有引用的常量和静态变量
-   所以失去引用的对象不是立即被回收的
-   回收是自动的，不必手动清除
-
-### 背景
-
-1. JVM是编译java源码的环境，不是工具
-
-
-
-
-
-## 修饰符,方法,包
-
-决定其修饰的 类型/变量/方法 的作用范围 (可访问范围||可见范围)
-可见即可访问,不可见即不可访问
-
-### 顶级
-
-类/接口/枚举/注解/record 支持创建为顶级的独立源文件
-必须先创建以上类型 才能在以上文件里写 方法变量常量等
-
-- public 所有其它类可访问
-- package-private 仅包内可访问(就算是子包也不可以用)
-
-package级允许文件名与类名不同但是禁止使用,有歧义
-必须定义在类型内的,称呼为 Method方法
-可以脱离类型独立定义的 称呼为Function函数
-
-### 成员级
-
-声明在类型内部.可以是 类/接口/变量/常量/方法等
-
-- public 全局可访问
-- package-private 包内可访问
-- private 类型内可访问
-- protected 包和任意位置的子包类可以用
-
-### 方法
-
-#### 构成
-
-由 修饰符, 方法返回类型, 方法参数列表, 方法体 构成
-
-- 修饰符 public/private/static/final...
-- 方法返回类型 返回值的类型,没有返回值写void
-- 方法参数列表 ( type name) 没有参数时写 ()
-- 方法体 函数体
-
-<font color=0327ff>方法小驼峰，必须以动词开始，接形容词或者名词</font>
-
-#### 方法签名
-
-方法签名是类中一个方法区别于另一个方法的特征
-方法签名由**方法名称 参数列表的参数类型**决定，与**修饰符 返回值类型 参数名称**无关
-
-```
-public double calculate(double a, double b, int point)
-方法签名: calculate(double,double,int)
-public int calculate(double c, double d, int point)
-方法签名: calculate(double,double,int)
-它俩方法签名一样,无法编译
-```
-
-方法参数名称
-在作用范围内必须唯一,无论参数类型是否相同,参数名称不能相同.
-方法内的局部变量不能与方法参数名称相同
-(就是不能写函数,变量不能重名)
-
-```
-void setName(string num, int num){
-int num;
-}两个禁忌
-```
-
-#### 方法重载
-
-- 重载发生在一个类中，同名的方法具有不同的参数列表。
-- 有不同的参数列表才能算作重载方法。
-- 重载方法可以改变返回类型、访问修饰符。
-  但是仅改变这俩不算重载方法
-
-```java
-public void list(int groupId){}
-public int list(int groupId,int type){}
-public void list(int groupId,string name){}
-```
-
-
-
-#### 值传递
-
-8+1数据类型为值传递
-
-```java
-public static void main(String[] args){
-    String name = "java";
-    int index = 10;
-    getPrint(name,index);
-    System.out.println(name);
-    System.out.println(index);
-    return;
-}
-private static void getPrint(String name,int index){
-    System.out.println(name);
-    System.out.println(index);
-    name = "C++"
-    index = 5;
-    System.out.println(name);
-    System.out.println(index);
-    return;
-}
-/*
-结果
-java 10  name和index 是 java 和 10 传入getPrint后打印结果java,10
-C++ 5 在getPrint中 改java为c++,改index为5
-java 10 结束方法后打印还是java和10 
-说明 8+1类型是值传递
-*/ 
-```
-
-**对象是引用传递**
 
 
 
@@ -283,101 +149,105 @@ public class Bicycle{
 
 > this. 表示当前对象中的东西,上文setter 参数名字 与 变量名字相同,用this区分它俩,this.gear就是对象中的属性gear.
 
-### 构造函数
+### 点子
 
-#### 什么是构造函数
+垃圾收集器不会回收没有引用的常量和静态变量
+所以失去引用的对象不是立即被回收的
+回收是自动的，不必手动清除
 
-- 类的构造函数**没有返回类型.** 
-- 方法名称 与 类 的名称一致;
-- 无参构造函数并不是必须的，类中并不必须包含无参构造函数
+JVM是编译java源码的环境，不是工具
 
-```java
-public class Bicycle{
-	public Bicycle(){}
-}
+重写toString实现对象的详细输出，不是toClass
+
+java无法动态修改数组的长度
+
+return 可以声明在没有返回值的方法中，所以 return必须声明在有返回值的方法中 说法错误
+
+this 在类的内部代表当前的对象，不是类本身
+
+## 修饰符,方法,包
+
+决定其修饰的 类型/变量/方法 的作用范围 (可访问范围||可见范围)
+可见即可访问,不可见即不可访问
+
+### 修饰符
+
+#### 顶级
+
+类/接口/枚举/注解/record 支持创建为顶级的独立源文件
+必须先创建以上类型 才能在以上文件里写 方法变量常量等
+
+- public 所有其它类可访问
+- package-private 仅包内可访问(就算是子包也不可以用)
+
+package级允许文件名与类名不同但是禁止使用,有歧义
+必须定义在类型内的,称呼为 Method方法
+可以脱离类型独立定义的 称呼为Function函数
+
+#### 成员级
+
+声明在类型内部.可以是 类/接口/变量/常量/方法等
+
+- public 全局可访问
+- package-private 包内可访问
+- private 类型内可访问
+- protected 包和任意位置的子包类可以用
+
+### 方法
+
+#### 构成
+
+由 修饰符, 方法返回类型, 方法参数列表, 方法体 构成
+
+- 修饰符 public/private/static/final...
+- 方法返回类型 返回值的类型,没有返回值写void
+- 方法参数列表 ( type name) 没有参数时写 ()
+- 方法体 函数体
+
+<font color=0327ff>方法小驼峰，必须以动词开始，接形容词或者名词</font>
+
+#### 方法签名
+
+方法签名是类中一个方法区别于另一个方法的特征
+方法签名由**方法名称 参数列表的参数类型**决定，与**修饰符 返回值类型 参数名称**无关
+
+```
+public double calculate(double a, double b, int point)
+方法签名: calculate(double,double,int)
+public int calculate(double c, double d, int point)
+方法签名: calculate(double,double,int)
+它俩方法签名一样,无法编译
 ```
 
-可以通过 new 操作符 利用构造函数 创建一个类的对象
+方法参数名称
+在作用范围内必须唯一,无论参数类型是否相同,参数名称不能相同.
+方法内的局部变量不能与方法参数名称相同
+(就是不能写函数,变量不能重名)
 
-```java
-Bicycle bicycle = new Bicycle();
+```
+void setName(string num, int num){
+int num;
+}两个禁忌
 ```
 
-new的是什么?new的是Bicycle这个类吗?不是.类是不能new的
-它new的是构造函数 public Bicycle(){} 
+#### 重载**overload**
 
-这里是无参构造函数,仅创建了对象,但是没有初始化对象属性.
-可以通过有参构造函数 创建并初始化对象属性.
-
-当类显式声明了有参构造函数时,编译器将不再自动创建无参构造函数
-没有显式声明有参构造函数时,编译器自动创建无参构造函数. ->不写无参构造函数时,new Bicycle()可以使用的原因
-
-类可以声明多个构造函数,但是构造函数的方法签名不能相同.
+- 重载发生在一个类中，同名的方法具有不同的参数列表。
+- 有不同的参数列表才能算作重载方法。
+- 重载方法可以改变返回类型、访问修饰符。
+  但是仅改变这俩不算重载方法
 
 ```java
-public class Bicycle{
-	private int cadence;
-	private int speed;
-	private int gear;
-    
-	public Bicycle(int gear){
-        this.gear = gear;
-    }
-    public Bicycle(int speed){
-        this.speed = speed;
-    }//无法编译,因为两个构造函数方法签名相同
-}
+public void list(int groupId){}
+public int list(int groupId,int type){}
+public void list(int groupId,string name){}
 ```
 
-就当第二个构造函数不存在,创建Bicycle对象的操作就变成了:
 
-```java
-Bicycle bicycle = new Bicycle(5);
-//这个 5 就是 bicycle 对象 gear的初始属性
-Bicycle bicycle = new Bicycle();
-//但是这样就不对了,因为无参构造函数不再自动创建了,真想用?自己声明;
-```
 
-#### 对象创建的过程
 
-- 声明
-- 实例化
-- 初始化
 
-声明:声明一个可以引用指定类型对象的变量
-Bicycle bicycle;//bicycle 可以接受Bicycle类型的对象
-**声明并不会创建一个对象**,必须为其分配一个地址
-实例化: new操作符为对象分配内存,并返回对象的内存地址给变量
-Bicycle bicycle = new 
-初始化: 利用构造函数完成对象的初始化
-Bicycle bicycle = new Bicycle(5)
-
-![](https://cdn.jsdelivr.net/gh/Hushyo/img@main/img/creat.png)
-
-创建一个对象,就是创建一个 类的实例 ,即 实例化一个类
-
-#### 对象引用传递
-
-```java
-public class Test {
-    public static void main(String[] args){
-        Bicycle bicycle = new Bicycle();
-        bicycle.setGear(5);//初始化bicycle的gear为 5
-        test(bicycle); 
-        System.out.println("离开方法后："+bicycle.getGear()); //如果是值传递,bicycle对象的gear仍是5
-    }
-    private static void test(Bicycle bicycle){
-        System.out.println("方法修改前："+bicycle.getGear());
-        bicycle.setGear(2);
-        System.out.println("方法修改后:"+bicycle.getGear());
-    }
-}
-/*结果:
-方法修改前：5
-方法修改后:2
-离开方法后：2
-说明 对象 是引用传递*/
-```
+> 
 
 ### 包的导入
 
@@ -441,6 +311,187 @@ public class Student{
 - 一个源文件可以有多个类
 - 一个类中可以声明多个类
 - 源文件可以供多个程序使用
+
+#### 构造函数
+
+- 类的构造函数**没有返回类型.** 
+- 方法名称 与 类 的名称一致;
+- 无参构造函数并不是必须的，类中并不必须包含无参构造函数
+- 类可以声明多个构造函数,但是构造函数的方法签名不能相同.
+
+可以通过 new 操作符 利用构造函数 创建一个类的对象
+
+```java
+Bicycle bicycle = new Bicycle();
+```
+
+new的是什么?new的是Bicycle这个类吗?不是.类是不能new的
+它new的是构造函数 public Bicycle(){} 
+
+这里是无参构造函数,仅创建了对象,但是没有初始化对象属性.
+可以通过有参构造函数 创建并初始化对象属性.
+
+- 当类显式声明了有参构造函数时,编译器将不再自动创建无参构造函数
+  没有显式声明有参构造函数时,编译器自动创建无参构造函数. ->不写无参构造函数时,new Bicycle()可以使用的原因
+
+```java
+public class Bicycle{
+	private int cadence;
+	private int speed;
+	private int gear;
+    
+	public Bicycle(int gear){
+        this.gear = gear;
+    }
+    public Bicycle(int speed){
+        this.speed = speed;
+    }//无法编译,因为两个构造函数方法签名相同
+}
+Bicycle bicycle = new Bicycle(5);
+//这个 5 就是 bicycle 对象 gear的初始属性
+Bicycle bicycle = new Bicycle();
+//但是这样就不对了,因为无参构造函数不再自动创建了,真想用?自己声明;
+```
+
+**多个构造函数**
+
+```java
+public class Test{
+    int var;
+    Test(double var){
+        this.var = (int)var;
+    }
+    Test(int var){
+        this("hello");
+    }
+    Test(String s){
+        this();
+        System.out.println(s);
+    }
+    Test(){
+        System.out.println("goodbye");
+    }
+    public static void main(String[] args){
+    Test t = new Test(5);
+    }
+}/*
+多个构造函数，输入5时，它会调用哪个？
+调用符合条件的，输入 int 那么就调用 int
+调用  Test(int var),而它里面又调用了 Test(String s).
+此时传入的5去哪了？没了，没有赋值给var的语句
+调用Test(String s),传入了"hello",这个函数调用了Test()
+所以结果是 goodbye
+		 hello
+```
+
+```java
+public class A {
+   private String name;
+    public A() {
+       System.out.println("1");
+    }
+    public A(String name) {
+        this.name = name;
+        System.out.println("2");
+    }
+}
+public class B extends A{
+    private A a;
+    public B() {
+        System.out.println("3");
+    }
+    public B(String name) {
+        System.out.println("4");
+       a = new A("5");
+    }
+}
+new B("6");/*结果是？
+要调用B了，先加载B，而B继承自A，先加载类A，A里面没有什么静态代码，无事发生
+再加载B，B声明了a，不会加载A，仅声明不会加载类
+newB类对象时，会优先调用超类A的构造函数，调用哪个呢？
+B中没有显式调用A的构造函数，所以默认调用A的无参构造函数 输出1
+之后调用B的有参构造函数，输出4
+之后创建A类对象，调用A的有参构造函数，输出2 
+结果 1 4 2
+```
+
+
+
+#### 对象创建
+
+- 声明
+- 实例化
+- 初始化
+
+声明:声明一个可以引用指定类型对象的变量
+Bicycle bicycle;//bicycle 可以接受Bicycle类型的对象
+**声明并不会创建一个对象**,必须为其分配一个地址
+实例化: new操作符为对象分配内存,并返回对象的内存地址给变量
+Bicycle bicycle = new 
+初始化: 利用构造函数完成对象的初始化
+Bicycle bicycle = new Bicycle(5)
+
+![](https://cdn.jsdelivr.net/gh/Hushyo/img@main/img/creat.png)
+
+创建一个对象,就是创建一个 类的实例 ,即 实例化一个类
+
+#### 对象引用传递
+
+```java
+public class Test {
+    public static void main(String[] args){
+        Bicycle bicycle = new Bicycle();
+        bicycle.setGear(5);//初始化bicycle的gear为 5
+        test(bicycle); 
+        System.out.println("离开方法后："+bicycle.getGear()); //如果是值传递,bicycle对象的gear仍是5
+    }
+    private static void test(Bicycle bicycle){
+        System.out.println("方法修改前："+bicycle.getGear());
+        bicycle.setGear(2);
+        System.out.println("方法修改后:"+bicycle.getGear());
+    }
+}
+/*结果:
+方法修改前：5
+方法修改后:2
+离开方法后：2
+说明 对象 是引用传递*/
+```
+
+#### 值传递
+
+8+1数据类型为值传递
+
+```java
+public static void main(String[] args){
+    String name = "java";
+    int index = 10;
+    getPrint(name,index);
+    System.out.println(name);
+    System.out.println(index);
+    return;
+}
+private static void getPrint(String name,int index){
+    System.out.println(name);
+    System.out.println(index);
+    name = "C++"
+    index = 5;
+    System.out.println(name);
+    System.out.println(index);
+    return;
+}
+/*
+结果
+java 10  name和index 是 java 和 10 传入getPrint后打印结果java,10
+C++ 5 在getPrint中 改java为c++,改index为5
+java 10 结束方法后打印还是java和10 
+说明 8+1类型是值传递
+*/ 
+```
+
+**对象是引用传递**
+
+
 
 ### static method
 
@@ -742,7 +793,7 @@ public class Student{
 
 
 
-## 抽象类和接口
+## 抽象类,接口,继承
 
 ### 接口
 
@@ -1015,9 +1066,9 @@ A a = new 匿名类 把实例化的子类对象上转型给 a
 
 
 
-## 继承Inheritance
+### 继承Inheritance
 
-### 须知
+#### 须知
 
 - **Subclass** 子类(派生类,扩展类)
 - **Superclass** 超类(基类) 
@@ -1058,7 +1109,7 @@ public class Bird extends Animal {
 
 > 在子类,超类的方法没有名称冲突时,可以直接使用超类中的方法,无无需声明 super.
 
-### 子类实例化
+#### 子类实例化
 
 子类必须满足超类的特性。子类的构造函数必须把超类也构造上
 
@@ -1108,7 +1159,7 @@ public class Bird extends Animal implements Flyable {
 先把超类构造出来 才能在超类的基础上添加子类属性构造出来子类.
 调用super是为了完成本类继承自超类的属性的初始化,并不会创建超类对象
 
-### 重写
+#### 重写override
 
 支持在子类中声明一个与超类中方法签名相同的新的实例方法.
 
@@ -1117,10 +1168,15 @@ public class Bird extends Animal implements Flyable {
   隐藏静态方法时，无需@override注解修饰 
   
 - **要求**
-  重写的方法必须具有**相同的方法签名和返回值类型**。
+  **方法签名一样**。
+  
   没有限制参数列表的参数名称，所以改变参数名称也叫重写
-
-  > 如果返回类型是类，那么重写方法的返回类型必须与超类返回类型相同或者是返回类型的子类。
+  
+  **返回类型**
+  
+  1.  void ，不能增加返回类型
+  2. 基本类型 ，不能改变
+  3. 其他类型 ， 允许返回类型改成子类
 - **访问范围**
   重写方法的访问权限不能比父类中被重写方法的访问权限更低。
   超类是protected,子类访问范围必须大于等于protected
@@ -1130,7 +1186,7 @@ public class Bird extends Animal implements Flyable {
 
 
 
-### 类型转换
+#### 类型转换
 
 相关的不同类型间的转换,是多态的表现形式
 Bird继承自Animal以及Object,因此Bird是Animal类型,也是Object类型.但是反过来不能确定
@@ -1188,7 +1244,7 @@ bird.move() -> bird move 而不是 animal move
 方法的实现还是Bird中的方法,而不是animal中的方法,因为bird是Bird类型的对象.
 ```
 
-### 声明与限制
+#### 声明与限制
 
 接口无法实例化.
 声明的接口类型变量,是其实际引用对象的类型.
