@@ -230,24 +230,7 @@ int num;
 }两个禁忌
 ```
 
-#### 重载**overload**
 
-- 重载发生在一个类中，同名的方法具有不同的参数列表。
-- 有不同的参数列表才能算作重载方法。
-- 重载方法可以改变返回类型、访问修饰符。
-  但是仅改变这俩不算重载方法
-
-```java
-public void list(int groupId){}
-public int list(int groupId,int type){}
-public void list(int groupId,string name){}
-```
-
-
-
-
-
-> 
 
 ### 包的导入
 
@@ -1159,33 +1142,6 @@ public class Bird extends Animal implements Flyable {
 先把超类构造出来 才能在超类的基础上添加子类属性构造出来子类.
 调用super是为了完成本类继承自超类的属性的初始化,并不会创建超类对象
 
-#### 重写override
-
-支持在子类中声明一个与超类中方法签名相同的新的实例方法.
-
-- **声明**
-  @override 覆写超类方法.(隐藏超类方法)
-  隐藏静态方法时，无需@override注解修饰 
-  
-- **要求**
-  **方法签名一样**。
-  
-  没有限制参数列表的参数名称，所以改变参数名称也叫重写
-  
-  **返回类型**
-  
-  1.  void ，不能增加返回类型
-  2. 基本类型 ，不能改变
-  3. 其他类型 ， 允许返回类型改成子类
-- **访问范围**
-  重写方法的访问权限不能比父类中被重写方法的访问权限更低。
-  超类是protected,子类访问范围必须大于等于protected
-  可以是public,可以是protected,不能是private或其他比超类声明的访问范围小的
-
-**final修饰的方法无法被重写**
-
-
-
 #### 类型转换
 
 相关的不同类型间的转换,是多态的表现形式
@@ -1255,6 +1211,51 @@ Movable movable = new Animal();
 
 变量 movable 实际类型是 Animal
 但是由于声明限制，movable 只能表现出Movable类型的能力。
+
+
+
+### Override Overload
+
+#### 重写override
+
+支持在子类中声明一个与超类中方法签名相同的新的实例方法.
+
+- **声明**
+  @override 覆写超类方法.(隐藏超类方法)
+  隐藏静态方法时，无需@override注解修饰 
+
+- **要求**
+  **方法签名一样**。
+
+  没有限制参数列表的参数名称，所以改变参数名称也叫重写
+
+  **返回类型**
+
+  1.  void ，不能增加返回类型
+  2.  基本类型 ，不能改变
+  3.  其他类型 ， 允许返回类型改成子类
+
+- **访问范围**
+  重写方法的访问权限不能比父类中被重写方法的访问权限更低。
+  超类是protected,子类访问范围必须大于等于protected
+  可以是public,可以是protected,不能是private或其他比超类声明的访问范围小的
+
+**final修饰的方法无法被重写**
+
+
+
+#### 重载**overload**
+
+- 重载发生在一个类中，同名的方法具有不同的参数列表。
+- 有不同的参数列表才能算作重载方法。
+- 重载方法可以改变返回类型、访问修饰符。
+  但是仅改变这俩不算重载方法
+
+```java
+public void list(int groupId){}
+public int list(int groupId,int type){}
+public void list(int groupId,string name){}
+```
 
 
 
@@ -1485,9 +1486,7 @@ StringBuilder(String s)
 
 - toString() 将builder中的字符序列转为字符串
 
-![QQ图片20240405214143](E:/PS/08stu/QQ%E5%9B%BE%E7%89%8720240405214143.png)
 
-![QQ图片20240405214146](E:/PS/08stu/QQ%E5%9B%BE%E7%89%8720240405214146.png)
 
 String 直接相加的效率没有StringBuilder相加的效率高
 
@@ -1505,15 +1504,13 @@ println()输出类型按参数中第一个输出的算,先输出"Total",,则把�
 
 java15以后,可以输出代码块了,关键词 """ """ 三个双引号括起来代码块,可以原样输出,而不用一个一个转义字符\.
 
-![QQ图片20240405214909](E:/PS/08stu/QQ%E5%9B%BE%E7%89%8720240405214909.png)注意分号
 
-![QQ图片20240405214911](E:/PS/08stu/QQ%E5%9B%BE%E7%89%8720240405214911.png)原样输出
 
 ##### 占位符
 
 字符串中也可以用%s,%d···等占位符占位
 使用方法 String.formatted(填充参数)将指定参数填入占位符
-![QQ图片20240405215242](E:/PS/08stu/QQ%E5%9B%BE%E7%89%8720240405215242.png)
+
 
 > 如何输出百分号%?  用百分号转义百分号 , \ 不能用来转义百分号
 
@@ -1521,14 +1518,36 @@ java15以后,可以输出代码块了,关键词 """ """ 三个双引号括起来
 
 ## 集合
 
-### 解释
-
 将许多元素组合后曾一个单一单元的容器对象，可用于存储/检索/操作/传输/聚合数据
 
 Collection(接口)，表示一组被称为元素的对象
 Collection\<E>接口，用于描述最具通用性的集合，也包含了最具通用性的集合操作方法
 
 Collection接口均继承自Iterable接口，即所有集合类型均支持foreach循环语句
+
+- <font color = blue>**集合里的元素必须是引用类型**</font>（封装基本类型用处这不就来了）
+  集合操作的也是元素所引用的对象，
+  如 有一个学生对象，stu1 = new Student(); stu2 = stu1, 把 stu1 和 stu2放入同一个集合里
+  操作stu1，修改学生名字为A，再打印stu2的名字，发现也是A，所以操作的是元素引用的对象
+  同时也说明List集合允许包含重复元素
+
+
+
+- **\<E>** 泛型. (表示可以是任何类型)
+  		创建集合时,必须将泛型具体化为一个  引用类型
+    		有助于编译器编译时检测,减少运行时错误
+
+> 那么为什么不声明为Object类?
+> 所有类都是Object类的子类,那么声明Object跟没声明一样
+> 集合不关心里面塞了什么,但是我们关心.我们声明类型后,这个集合只放这个
+
+
+
+- 集合系列操作需要放在主函数里，在类里写是识别不了的
+
+![QQ图片20240410220320](https://cdn.jsdelivr.net/gh/Hushyo/img@main/img/QQ%E5%9B%BE%E7%89%8720240410220320.png)
+
+![QQ图片20240410220126](https://cdn.jsdelivr.net/gh/Hushyo/img@main/img/QQ%E5%9B%BE%E7%89%8720240410220126.png)
 
 ### 方法
 
@@ -1546,18 +1565,17 @@ Collection接口均继承自Iterable接口，即所有集合类型均支持forea
 |          T[]  toArray(T[] a)           | 将集合转化为指定类型数组 |
 |        Iterator\<E> iterator()         |        获取迭代器        |
 
-**\<E>** 泛型. (表示可以是任何类型)
-		创建集合时,必须将泛型具体化为一个  引用类型
-		有助于编译器编译时检测,减少运行时错误
+Collection 的 foreach方法运行时 不允许改变集合的长度
 
-那么为什么不声明为Object类?
-所有类都是Object类的子类,那么声明Object跟没声明一样
-集合不关心里面塞了什么,但是我们关心.我们声明类型后,这个集合只放这个
+> 一个String集合 删除“sun”元素时，有些注意点，
+> 集合中 删除元素后，后面的元素会自动向前移，补全空位。
+> 所以不改变索引指针时，可能跳过一些符合条件的元素
+>  1和2都是“sun“，删了1的”sun“后，2移到1，但是下一次搜索的i=2，所以注意删除后i--
 
 ### List\<E>
 
-有序,允许包含重复元素的集合.
-除了继承自Collection的方法,还提供了位置索引的操作方法
+- 有序,允许包含重复元素的集合.
+  除了继承自Collection的方法,还提供了位置索引的操作方法
 
 |         Method          | Operation |
 | :---------------------: | :-------: |
@@ -1567,9 +1585,139 @@ Collection接口均继承自Iterable接口，即所有集合类型均支持forea
 |   E remove(int index)   |   移除    |
 |           ···           |    ···    |
 
-#### ArrayList &LinkedList
+**ArrayList LinkedList**
 
-List集合的基本实现类有 ArrayList 和 LinkedList
+List集合的基本实现类有 ArrayList 和 LinkedList 
 
 - ArrayList 基于对象数组数据结构实现 
 - LinkedList 基于双向链表数据结构实现
+
+> 创建List的时候 new 它俩
+>
+> List<Integer> list = new ArrayList<>();
+> List<Integer> list = new LinkedList<>();
+
+#### 声明创建
+
+```javascript
+List<type> list = new ArrayList<>();
+//声明List集合类型变量list, <>中声明集合中元素的类型，必须为引用类型
+//后面的尖括号<>可以不填写类型，java自动推导，只填前面的就行
+//ArrayList或是LinkedList都可以，根据具体储存结构选择两种不同的实现类
+List<String> strings;
+List<Integer> numbers;
+//定义好泛型后，加入不符合泛型的元素，会报错，加入元素类型的父类也会报错--父类有子类的特性吗？
+//泛型约束向集合里传入的元素类型
+List<Integer> numbers = new ArrayList<>();
+numbers.add("string");报错
+```
+
+#### ArrayList构造函数
+
+- **ArrayList**() 
+  创建空List集合。默认创建0个元素的对象数组
+- **ArrayList(int length)**
+  创建 length 长度的List集合，长度仅限初始化时使用，后期添加/移除元素时自动更改长度
+- ArrayList(Collection\<E> c) 
+  基于 集合c 创建 List集合
+
+LinkedList的构造函数同理
+
+#### **ArrayList LinkedList**
+
+- LinkedList基于双向链表数据结构实现，每个元素都有两个节点对象保留前后元素的地址
+
+  ArrayList基于数组结构实现
+
+- ArrayList 可以基于索引快速访问对象
+  LinkedList 基于索引访问对象比较慢
+  
+- LinkedList 删除某索引前全部元素快得很，因为有前后指针
+  ArrayList 删除某索引前全部元素比较慢
+
+
+
+### Map
+
+- <font color = blue>**Map不是集合**</font>
+
+- Map用于存放键值对(key-value)。
+  通过key值，保存和获取其对应的value值。
+- key是唯一的，每个key只能对应一个value，但是一个value可以对应多个key，键值可以多对一。
+
+- 添加键值对时，如果key已经存在，则新值覆盖旧值。
+- java通过 key 的hash值判断key是否相同。
+- 支持基本数据类型和任何类型的对象作为key/value。
+- Map没有基于index索引的操作。
+- Map不是Collection的子类，没有继承Iterable的操作，不支持foreach遍历。
+- 支持嵌套： Map<String,Map<Integer,User> >
+- 基本实现类为
+  HashMap<k,v>
+  TreeMap<k,v>
+  HashTable<k,v>
+
+#### Method
+
+|  Return   |               Method               |                  Operation                  |
+| :-------: | :--------------------------------: | :-----------------------------------------: |
+|     V     |        put(k key, v value)         |            添加键值对且返回value            |
+|     V     |             get(k key)             | 基于key获取value<br />value不存在则返回null |
+|     V     |           remove(k key)            |           移除键值对并且返回value           |
+|  boolean  |         containsKey(k key)         |                 是否包含key                 |
+|  boolean  |       containsValue(v value)       |                是否包含value                |
+|    int    |               size()               |                 键值对个数                  |
+|  boolean  |             isEmpty()              |                  是否为空                   |
+| default V | getOrDefault(k key,v defaultvalue) |                  **待定**                   |
+|    ···    |                ···                 |                     ···                     |
+
+### Set
+
+- **Set**集合 不包含重复元素（数学中集合的抽象）
+  因此不支持index索引
+- **Set**集合只包含继承自Collection的方法，并且包含重复元素的校验
+- 基本实现类
+  HashSet\<E> 元素无序（基于HashMap确定元素是否重复）。
+  LinkedHashSet\<E> 元素有序
+  TreeSet\<E> 元素有序
+  无论使用有序还是无序的实现类，都没有基于索引的操作方法
+- **Set**集合适合描述逻辑上不能重复的对象：扑克牌，人···
+
+**Tips:**
+还记得List的第三种构造函数么？基于集合创建List ArrayList(Collection\<E> c) 
+List/Set集合均提供参数为Collection的构造函数，可以将两种集合互相转化
+
+```java
+Set<User> uSet= new HashSet<>();//创建set
+List<User> uList= new ArrayList<>(uSet);//set转list
+
+List<User> uList = new ArrayList<>();//创建list
+Set<User> uSet= new HashSet<>(uList);//list转set
+
+//list转set自动去重
+```
+
+### Iterators
+
+- Iterator接口，迭代器，允许遍历集合，并且根据需求从中移除元素
+- Iterator\<E> iterator()方法，Collection接口的方法，获取集合对象的迭代器
+
+#### Method
+
+| Return  |  Method   |             Operation              |
+| :-----: | :-------: | :--------------------------------: |
+| boolean | hasNext() |     Iterator中是否有下一个元素     |
+|    E    |  next()   | 向后移动游标同时返回游标指向的元素 |
+|  void   | remove()  |       移除游标当前指向的元素       |
+
+### 不可变集合
+
+- 如果一个对象的状态在构造后不能改变，则该对象被认为是不可变的。
+- 不可变集合是线程安全
+- 不可变集合的结构不变，构造速度更快，消耗内存空间更小
+  不可变集合的结构不可变（长度也不可变），一旦创建，不可添加/移除元素
+  如需改变结构必须创建新的结合（类似数组）
+  不可变集合中的元素可以替换，元素对象属性值可以改变
+- 
+
+
+
