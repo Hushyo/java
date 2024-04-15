@@ -1712,12 +1712,171 @@ Set<User> uSet= new HashSet<>(uList);//list转set
 ### 不可变集合
 
 - 如果一个对象的状态在构造后不能改变，则该对象被认为是不可变的。
+
 - 不可变集合是线程安全
+
 - 不可变集合的结构不变，构造速度更快，消耗内存空间更小
   不可变集合的结构不可变（长度也不可变），一旦创建，不可添加/移除元素
   如需改变结构必须创建新的结合（类似数组）
   不可变集合中的元素可以替换，元素对象属性值可以改变
-- 
+  
+- List.of() / Set.of() / Map.of (),返回空集合对象
+  List.of(e,e,e,e) / Set.of(e,e,e,e) / Map.of (k,v) 基于元素创建并返回相应的集合对象
+
+  ```java
+  List<Integer> number= List.of(1,2,3,4);
+         for(Integer num : number){
+             System.out.println(num);
+         }//1,2,3,4
+  ```
+
+### Tips
+
+- null是所有引用类型的默认值
+- 集合类型允许包含地址为null的元素
+- Map允许声明null为 k / v
+- 不可变类型集合不允许包含 null
+
+## 函数式编程
+
+函数式编程，函数的输出应该且仅应该依赖函数的本身。
+函数的执行不依赖于函数外部数据。 即 函数要用的数据 只有参数列表传进来的和函数内部的
+不用外部的数据
+
+```java
+//方法执行的结果，不仅依赖于方法本身而且依赖外部的属性
+//面向对象的设计↓
+int x;
+public int multiply(){
+return x*x;
+}
+//方法的执行结果仅依赖于方法本身
+//函数式设计↓
+public int multiply(int x){
+return x*x;
+}
+```
+
+### Lambda
+
+又 匿名函数表达式
+
+- 有自己的参数列表，函数体和返回值
+
+  - 闭包，独立于类
+  - 匿名，无需声明修饰符，返回类型，函数名
+  - 传递，可以像引用变量类型一样声明，像对象一样传递
+
+- **语法**
+  <font color = blue>(参数列表) -> {body} </font>
+  函数体body很小，只有一行时，{ }可以省略
+  参数为空时，需要声明空括号；只有一个参数时，可以省略括号
+  参数列表的参数类型可以省略，编译器自动完成推导
+
+  ```java
+  (int num1,int num2) -> 
+  (num1,num2) -> 
+  //等效
+  num1 ->//一个参数 省略括号
+  () -> //无参数 声明空括号
+  ```
+
+  
+
+### Stream
+
+- **流操作**
+  - 集合是存储元素对象的容器，而集合流Stream并不是存储元素的数据结构，
+    而是操作集合元素的管道
+  - Stream操作的是集合中的元素，而非集合本身。
+    因此，将创建新集合聚合Stream操作的结果，而不影响源集合结构
+  - Stream仅会对流过的元素操作一次，因此必须生成一个新的Stream才可以继续操作
+    Stream上的操作会被延迟处理，针对一个集合的多次操作会被优化后执行，提高效率
+  - **Collection接口中stream()方法可以获取当前集合的Stream对象**
+
+#### 终止操作
+
+终止stream操作处理，消费stream操作产生的结果
+
+- collect() ：聚合在 stream 中间操作的结果
+- forEach() ： 迭代stream的每个元素
+- ······
+
+#### **Collectors类**
+
+用于操作聚合结果的工具类
+
+- groupingBy()/mapping() 分组映射
+- toList() / toSet() / toMap() 将stream结果转化为集合
+- ······
+
+#### forEach()
+
+是个Stream的方法，参数是 函数，应该传入函数对象
+
+```java
+for(Apple a : APPLES){
+ System.out.println(a.getWeight());
+}//原foreach语句
+APPLES.forEach( a -> {System.out.println(a.getWeight());});
+//基于forEach方法以及Lambda表达式
+//a -> {System.out.println(a.getWeight());}是一个函数
+//↑这里只能有一个参数a，因为这个foreach方法只要一个参数
+//而不是因为lambda只能一个参数，lambda可以有多个参数
+```
+
+#### 中间操作
+
+对集合中元素所执行的具体操作
+
+- Stream filter() : 基于参数选择stream中的元素，过滤
+- Stream map() : 基于stream操作映射为新的类型，映射
+- Stream sorted() ：排序stream中的元素，排序
+- Long count() ：获取stream中元素个数，技术
+- ······
+
+中间操作执行后，将结果置于一个新的Stream，从而允许新的Stream实现后续操作，形成基于Stream的操作链
+
+
+
+- **Stream\<T> filter()**
+  过滤stream中的元素，表达式结果必须为boolean值，为真则置于新stream，为假则过滤掉
+
+  - 苹果s过滤颜色
+
+    ```java
+    private static void getStreamMap(Apple.Color c){    
+    Stream<Apple> appleStream = APPLES.stream();
+    //基于集合创建流 APPLES是 Apple类型元素对象的集合
+    //collection类中有方法 stream()获得集合对应的对象
+    //APPLES.stream()获得APPLES的Stream对象
+        
+    Stream<Apple> colorStream = appleStream.filter(a -> c==a.getColor());
+    //中间操作 filter() 括号里的参数是函数，lambda恰好符合这个
+    // a -> c==a.getColor() a只是随意命名的lambda形参名字而已
+        
+    List<Apple> apples = colorStream.collect(Collectors.toList());
+    //stream有方法 collect() 括号内参数是 Collector.toList()/toSet()/toMap().
+    //转化为对应的集合对象
+        
+    }
+    List<Apple> apples = APPLES
+    					.stream()
+        				.filter(a - > c == a.getColor())
+    					.collect(Collector.toList());
+    //基于stream的方法链
+    //java17后，.collect(Collector.toList()) 可以写 toList()。等效的			
+    ```
+
+  - **过滤重量和颜色**
+
+    ```java
+    List<Apple> apples = APPLES.stream()
+    					.filter( a -> a.getColer == c && a.getWeight() >=weight)
+    					.collect(Collectors.toList());
+    ```
+
+
 
 
 
