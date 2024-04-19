@@ -5,100 +5,51 @@
 ### 命名:
 所有 **包/类/接口/方法/参数/变量** 的命名必须使用 
 有意义且无歧义的 英文单词或其缩写
-禁止中文,拼音以及中英混合
+<font color = red>禁止中文,拼音以及中英混合</font>
 
-
-
-#### 类 命名: 
-
-<font color=blue>驼峰式命名</font>,每个单词仅首字母大写,其余小写
-一般是单数,工具类可以用复数
-
-
-
-#### 包 命名:
-
-使用<font color=blue>全部小写</font>的英文单数名词
-package 声明包的路径名称
-必须放在源文件的顶部,源文件的位置必须与包声明的路径相同
-
-
-
-#### 变量 命名:
-
-<font color=blue>小 驼峰</font>(先小写,再驼峰)
-首个单词的首字母小写,其余单词首字母大写
-
-
-
-> string userName = "Petter"
-
-
+|   Name   |             CC              |                             Tips                             |
+| :------: | :-------------------------: | :----------------------------------------------------------: |
+|  **类**  |         **驼峰式**          |              **一般单数<br />工具类可以用复数**              |
+| **变量** |        **小驼峰式**         |                                                              |
+| **方法** |        **小驼峰式**         |                                                              |
+|  **包**  |          **小写**           | **必须放在源文件的顶部<br />源文件的位置必须与包声明的路径相同** |
+| **常量** | **大写<br />用 _ 分隔单词** |                   **用关键字 final 修饰**                    |
 
 #### 合法的标识符:
 
-首字符仅支持26个字母和符号 $ , _ 不支持数字以及其他符号
+首字符仅支持 26个字母 和 符号 $ , _  不支持 数字以及其他符号
 后续字符可以是字母,数字以及 _ 不支持其他字符
 但是为了规范: 不用 \$ 与 _ 开头
 
-
-
 > \$count _count count\$ count_\$ 合法但是不要用
-
-
 
 #### 数字字面量:
 支持用下划线 _ 分隔,提高代码可读性
 编译时会把 _ 忽略
 
-
-
 > creditCardNumber = 1234_567_89
 
 
 
-#### 常量 :
-所有字母大写且用 _ 分隔单词 
-final
+### 数字
 
-> final int NUM_GEAR = 6
-
-
-
-### ldf
-
-long
-
-长整型 long 的数值要以 L 结尾 
-
-> long creditCardNumber = 12344456L
-> long num = 123L
-
-不用 L 结尾也不会报错,但是要规范,得加上
-
-float
-
-float 以 f/F 结尾,必须以 f/F 结尾
-浮点型判断大小 只能用 >= 或 <= 不要用 ==
-
->  float num=1.23F
-
-double
-
-double 以 d/D 结尾,也可以不要
-默认的double  类型允许不声明后缀
-
-> double num = 1.23
-> dounle num = 1.23D
+|  Name  |                      CC                      |                 example                  |
+| :----: | :------------------------------------------: | :--------------------------------------: |
+|  long  | 以 L 结尾,也可以不要<br />不报错，但是不规范 |             long num = 123L              |
+| float  |       以 f/F 结尾<br />必须以 f/F 结尾       |             float num=1.23F              |
+| double |            以 d/D 结尾,也可以不要            | double num = 1.23<br/>dounle num = 1.23D |
 
 
 
 ### 封装
 
-类中可以声明成员变量
+对外隐藏功能实现的具体细节，并且隐藏对象中的数据信息，通过暴露方法/接口对外提供服务. 
+
 
 - public修饰的成员变量为公有成员变量,全局可访问
 - private修饰的成员变量,私有成员变量,仅能在类中访问
+
+Bicycle类中声明了三个 int 类型的 公共非静态变量
 
 ```java
 public class Bicycle{
@@ -108,14 +59,17 @@ public class Bicycle{
 }
 ```
 
-Bicycle中声明了三个 int 类型的public 公共成员变量
-成员变量必须通过对象操作访问 
+当我们创建对象后，可以直接访问对象的属性
+
+```java
 Bicycle bicycle = new Bicycle();
 System.out.println(<font color = red>bicycle.cadence</font>) ;
-这是直接访问了对象中的属性数据.
+```
 
-规范: 不要通过public暴露对象中的数据
-实体对象的属性必须用private封装起来,不能让外界直接访问 正确如下
+**规范:**
+不要暴露对象的属性
+对象的属性必须用private封装起来
+不能让外界直接访问 
 
 ```java
 public class Bicycle{
@@ -125,10 +79,7 @@ public class Bicycle{
 }
 ```
 
-封装 对外隐藏功能实现的具体细节,并且隐藏对象中的数据信息.
-		 通过暴露方法/接口对外提供服务.
-那么外界如何获取信息?
-对成员变量的操作必须通过访问器**(getter/setter)**实现
+对外设置访问器(**getter/setter**),允许外界通过访问器访问成员的属性
 
 ```java
 public class Bicycle{
@@ -147,7 +98,7 @@ public class Bicycle{
 
 对象每一个属性都需要设置对应的 getter 和 setter;
 
-> this. 表示当前对象中的东西,上文setter 参数名字 与 变量名字相同,用this区分它俩,this.gear就是对象中的属性gear.
+> this. 表示当前对象的引用,上文setter 参数名字 与 变量名字相同,用this区分它俩,this.gear就是对象中的属性gear.
 
 ### 点子
 
@@ -167,20 +118,20 @@ this 在类的内部代表当前的对象，不是类本身
 
 ## 修饰符,方法,包
 
-决定其修饰的 类型/变量/方法 的作用范围 (可访问范围||可见范围)
-可见即可访问,不可见即不可访问
+修饰符决定其修饰的 类型/变量/方法 的作用范围 (可访问范围||可见范围)
 
 ### 修饰符
 
 #### 顶级
 
 类/接口/枚举/注解/record 支持创建为顶级的独立源文件
-必须先创建以上类型 才能在以上文件里写 方法变量常量等
+必须先创建源文件 才能在文件里编译
 
 - public 所有其它类可访问
 - package-private 仅包内可访问(就算是子包也不可以用)
 
 package级允许文件名与类名不同但是禁止使用,有歧义
+
 必须定义在类型内的,称呼为 Method方法
 可以脱离类型独立定义的 称呼为Function函数
 
@@ -197,18 +148,15 @@ package级允许文件名与类名不同但是禁止使用,有歧义
 
 #### 构成
 
-由 修饰符, 方法返回类型, 方法参数列表, 方法体 构成
-
-- 修饰符 public/private/static/final...
-- 方法返回类型 返回值的类型,没有返回值写void
-- 方法参数列表 ( type name) 没有参数时写 ()
-- 方法体 函数体
+由 修饰符, 返回类型, 方法名，参数列表, 方法体 构成
 
 <font color=0327ff>方法小驼峰，必须以动词开始，接形容词或者名词</font>
 
 #### 方法签名
 
-方法签名是类中一个方法区别于另一个方法的特征
+方法签名是一个方法区别于另一个方法的特征
+不同方法之间靠方法签名区分
+
 方法签名由**方法名称 参数列表的参数类型**决定，与**修饰符 返回值类型 参数名称**无关
 
 ```
@@ -220,15 +168,18 @@ public int calculate(double c, double d, int point)
 ```
 
 方法参数名称
-在作用范围内必须唯一,无论参数类型是否相同,参数名称不能相同.
-方法内的局部变量不能与方法参数名称相同
-(就是不能写函数,变量不能重名)
+在作用范围内必须唯一
+无论参数类型是否相同，参数名称不能相同。
+方法内的局部变量不能与方法参数名称相。
 
-```
+```java
 void setName(string num, int num){
 int num;
-}两个禁忌
+}
+//禁止
 ```
+
+---
 
 
 
@@ -242,6 +193,10 @@ int num;
 
 #### 全限定名称
 
+把要用的类的地址完完整整写出来
+如 在calzz包里有个 Bicycle类，想用它，怎么用？补全它的地址
+com.example.clazz.Bicycle
+
 ```java
 public class Student{
 	private com.example.clazz.Bicycle bicycle;
@@ -253,7 +208,7 @@ public class Student{
 #### 简单名称
 
 在package之后 类型定义语句之前 
-通过 import 关键词导入，导入后通过类型名使用类
+通过 import 关键词导入，导入要用的类的全限定名称，之后就可以仅用类的名称使用类
 
 ```java
 package com.example.packagex;
@@ -270,7 +225,7 @@ public class Student{
 用 * 号导入包中的所有类型
 
 ```java
-import com.example.clazz.;
+import com.example.clazz.*;
 public class Student{
 	private Bicycle bicycle;
 }
@@ -298,7 +253,7 @@ public class Student{
 #### 构造函数
 
 - 类的构造函数**没有返回类型.** 
-- 方法名称 与 类 的名称一致;
+- 构造函数方法名称 与 类 的名称一致;
 - 无参构造函数并不是必须的，类中并不必须包含无参构造函数
 - 类可以声明多个构造函数,但是构造函数的方法签名不能相同.
 
@@ -311,11 +266,8 @@ Bicycle bicycle = new Bicycle();
 new的是什么?new的是Bicycle这个类吗?不是.类是不能new的
 它new的是构造函数 public Bicycle(){} 
 
-这里是无参构造函数,仅创建了对象,但是没有初始化对象属性.
-可以通过有参构造函数 创建并初始化对象属性.
-
 - 当类显式声明了有参构造函数时,编译器将不再自动创建无参构造函数
-  没有显式声明有参构造函数时,编译器自动创建无参构造函数. ->不写无参构造函数时,new Bicycle()可以使用的原因
+  没有显式声明有参构造函数时,编译器自动创建无参构造函数。这也是不写无参构造函数时,new Bicycle()可以使用的原因
 
 ```java
 public class Bicycle{
@@ -337,6 +289,8 @@ Bicycle bicycle = new Bicycle();
 ```
 
 **多个构造函数**
+类有多种构造函数，调用构造函数创建对象时
+java根据我们传入的参数类型，自动调用符合参数列表的构造函数
 
 ```java
 public class Test{
@@ -402,23 +356,23 @@ B中没有显式调用A的构造函数，所以默认调用A的无参构造函�
 
 #### 对象创建
 
-- 声明
+- 声明 
+  声明并不会创建一个对象，也不会加载声明类
+  声明类仅创建一个变量，这个变量可以引用 声明类型的对象
+  Bicycle bicycle;
 - 实例化
+  创建对象就是实例化，创建对象是new操作符要做的事情
+  有几个new，就有几个对象
+  Bicycle bicycle = new
 - 初始化
-
-声明:声明一个可以引用指定类型对象的变量
-Bicycle bicycle;//bicycle 可以接受Bicycle类型的对象
-**声明并不会创建一个对象**,必须为其分配一个地址
-实例化: new操作符为对象分配内存,并返回对象的内存地址给变量
-Bicycle bicycle = new 
-初始化: 利用构造函数完成对象的初始化
-Bicycle bicycle = new Bicycle(5)
+  利用构造函数对对象完成初始化
+  Bicycle bicycle = new Bicycle(5)
 
 ![](https://cdn.jsdelivr.net/gh/Hushyo/img@main/img/creat.png)
 
-创建一个对象,就是创建一个 类的实例 ,即 实例化一个类
+#### 传递类型
 
-#### 对象引用传递
+##### 对象引用传递
 
 ```java
 public class Test {
@@ -441,7 +395,7 @@ public class Test {
 说明 对象 是引用传递*/
 ```
 
-#### 值传递
+##### 值传递
 
 8+1数据类型为值传递
 
@@ -472,24 +426,23 @@ java 10 结束方法后打印还是java和10
 */ 
 ```
 
-**对象是引用传递**
+### Static
 
+- **static关键字不会改变方法或者变量的访问范围**
+- java中static不能用于修饰局部变量
+- static可以不需要实例化对象就可以访问类中的属性和方法
 
+#### 方法
 
-### static method
+方法分为两种：静态方法和非静态方法
 
- **class** 是 method 的载体。
-一个 class 可以装两种 method，一种是 静态method，另一种是非静态method。
-static method 是整个 class 共享的 method
-non-static method 是具体某个实例的 method
-method 前写了 static ，这个方法是静态method，不写就是非静态 method
+- 静态方法可以直接 点 出来，直接使用
 
-- 调用 非静态method，需要创建一个对象，然后 对象.method 才能使用
-  因此也叫 实例方法 instance method
-- 调用 静态method 任何时候都可以 classname.method 来使用
-  也就是ppt上所说的静态不与任何对象关联.(记住上面的不用管这个)
-- 静态方法可以直接 点 出来，非静态方法只能通过对象 点 出来
+- 非静态方法，需要创建一个对象，然后通过 对象.方法 使用
+  因此也叫 实例方法
+
 - <font color = blue>静态方法属于类本身，不能被子类继承</font>
+- 静态方法内不允许使用 this 和 super 关键字
 
 ```java
 public class Test {
@@ -513,19 +466,17 @@ public class Main {
 
 
 
+#### 变量
 
+- 静态变量被所有的对象共享，在内存中只有一个地址，当且仅当类在初次加载时被初始化
+  非静态变量时对象所拥有的，每个对象的非静态变量地址不一样
 
-
-
-### static variable
-
-静态变量也是可以直接点出来，不同地方点出来的是同一个变量
-而非静态方法只能通过对象点出来，而点出来的这个变量只属于这个对象
-
-也分为 static variable 和 instance variable
-static variable 是 整个 class 共享的变量
-不管是直接 类调用它 还是 对象调用它,大家都是共享的
-instance variable 是 具体实例的变量,只存在于某个具体对象内.
+- 静态变量也是可以直接点出来
+  非静态变量只能通过对象点出来
+- 对于静态方法，不管是类调用它 还是对象调用它，调用的都是同一个地址
+- 类的私有静态变量，只有类的对象可以调用，不能通过类调用它。
+- 实例方法 单项访问 方法静态成员
+  静态方法 无法访问 实例级成员
 
 ```java
 public class Dish {
@@ -554,20 +505,21 @@ public class Test {
 }
 ```
 
-但是 类的私有静态变量,只有类的对象可以调用,不能通过类调用它.
-规范:私有静态变量依然禁止对外直接暴露,必须对外提供访问的公有静态方法
-类中 实例方法 单项访问 方法静态成员
-		 静态方法 无法访问 实例级成员
+
+**规范:**
+私有静态变量依然禁止对外直接暴露,必须对外提供访问的公有静态方法
 
 ![staticvariable](https://cdn.jsdelivr.net/gh/Hushyo/img@main/img/staticvariable.png)
 
-> 静态方法任何时刻都能用,而实例成员必须定义才会存在,因此静态方法无法访问可能不存在的成员 即 静态方法无法访问实例成员
+> 静态方法任何时刻都能用,而实例成员必须定义才会存在
+> 因此静态方法无法访问可能不存在的成员 
+> 即 静态方法无法访问实例成员
 
 
 
 
 
-### 静态内部类
+#### 静态内部类
 
 在 类 里面再定义一个 静态类
 虽然是定义在 类 的里面,但是规则上跟外部类一样,是完全独立的,只是代码层面是嵌套的.静态的内部类仍然无法调用外部类的实例级对象
@@ -578,7 +530,7 @@ public class Test {
 
 
 
-### 初始化顺序
+#### 初始化顺序
 
 ```java
 public class A {
@@ -795,23 +747,55 @@ public int addNum(int a, int b);   这便是仅声明了方法,没有实现,所�
 
 - 接口也是顶级的,可以单独创建源文件，也可以声明在类中
 
-- 接口可以继承接口，一个接口可以继承任意数量的接口，接口设计出来就是为了被继承的
+- 接口可以继承接口一个接口可以继承任意数量的接口，接口设计出来就是为了被继承的
 
 - 接口内可以包含 **抽象方法，默认方法， 静态方法 和常量**
-  接口中所有方法都有隐式public修饰，其中抽象方法具有隐式public abstract修饰
+  
+  接口中所有方法都有隐式public修饰，
+  抽象方法具有隐式public abstract修饰
   常量有隐式public static final修饰
+  
   隐式修饰，代表这些 public 可写可不写，写了不错，不写编译器自动补全。
-
-- 规范:接口中的方法/常量，省略多余的修饰符。
+  
+- 规范: 接口中的方法/常量，省略多余的修饰符。（不写）
 - 接口命名 名词或者名词短语,形容能力的以形容词命名；形容服务的声明服务类型后缀 UserService,InitService...
+  
+
+**接口中的方法不需要手动写 public ，因为有隐式 public**
 
 
 
+java8之前,接口中只能有抽象方法。
+
+java8及之后,接口里也可以有具体实现的方法了。通过 default 关键词在接口中声明方法的具体实现 (可以放心添加新method) 
+默认方法干什么的？可以把它当作接口的非静态方法。
+
+```java
+public interface Learnable{
+	void read();
+	default void study(){
+	 System.out.println("study");//这个 study 就是 default 声明实现的方法,所有实现了该接口的类都可以直接调用study
+	}
+}
+```
 
 
+java8之后 允许在接口中定义 静态方法.
+定义静态方法无需添加 default 关键词 
 
+所有静态方法都可以  类型.方法 使用
+接口的静态现在也可以 接口.方法 使用啦,无需任何实现类
 
-
+```java
+public interface Learnable{
+	int STUDY_TIME=8;
+	void read();
+	int test();
+	static int getLeftTime(int hours){
+	return hours - STUDY_TIME;
+	}
+}
+```
 
 
 
@@ -859,43 +843,6 @@ public class Undergraduate implements Learnable,Playable{//继承两个接口
 ```
 
 
-
-**接口中的方法不需要手动写 public ，因为有隐式 public**
-
-
-
-java8之前,接口中只能有抽象方法。
-
-java8及之后,接口里也可以有具体实现的方法了。通过 default 关键词在接口中声明方法的具体实现 (可以放心添加新method) 
-默认方法干什么的？可以把它当作接口的非静态方法。
-
-```java
-public interface Learnable{
-	void read();
-	default void study(){
-	 System.out.println("study");//这个 study 就是 default 声明实现的方法,所有实现了该接口的类都可以直接调用study
-	}
-}
-```
-
-
-
-java8之后 允许在接口中定义 静态方法.
-所有静态方法都可以  类型.方法 使用
-接口的静态现在也可以 接口.方法 使用啦,无需任何实现类
-
-```java
-public interface Learnable{
-	int STUDY_TIME=8;
-	void read();
-	int test();
-	static int getLeftTime(int hours){
-	return hours - STUDY_TIME;
-	}
-}
-```
-
-> 定义静态方法无需添加 default 关键词 
 
 
 
@@ -959,7 +906,8 @@ Organism org = new Organism("asd")//出错
 
 
 
-
+抽象类可以被多个类继承，但是只能继承一个抽象类
+类就是人，一个儿子只能有一个父亲
 
 ### 匿名内部类
 
@@ -1065,11 +1013,10 @@ A a = new 匿名类 把实例化的子类对象上转型给 a
 **继承的意义**:想创建一个新类,当前存在一个包含需要代码的类时,可以直接从现有的类中派生出一个新的类,重用现有类的成员,无需重新编写.
 许多语言有更为灵活的 Mix-in 即保持了代码的重用性,又降低了耦合性. 但是java没有.别想了
 
----
-
 - 子类继承超类所有的public/protected成员（变量，方法）
   并且可以直接调用超类中的public/protected静态成员(变量，方法）
   子类不能访问超类的private成员
+
 - 子类可以声明子类自有的新属性和新方法
 
 - **this** 指向当前对象的引用
@@ -1078,7 +1025,7 @@ A a = new 匿名类 把实例化的子类对象上转型给 a
   - 可以通过 **super** 调用超类的 **public / protected** 成员  超累的 private 用不了,private仅类内可用
   - 可以通过 **super** 调用超类构造函数
   - 不能理解为指向超类的引用,虽然实例化会调用超类构造函数,但是不会创建超类对象
-  
+
 
 ```java
 //Bird是Animal的子类
@@ -1280,11 +1227,11 @@ java为每一种基本数据类型提供了一个包装类,这些类可以将基
 |    short     |   Short   |
 |    double    |  Double   |
 
-![QQ图片20240405140654](https://cdn.jsdelivr.net/gh/Hushyo/img@main/img/QQ%E5%9B%BE%E7%89%8720240405140654.png)	num是基本数据类型,点不出方法
+![QQ图片20240405140654](https://cdn.jsdelivr.net/gh/Hushyo/img@main/img/QQ%E5%9B%BE%E7%89%8720240405140654.png)	
+num是基本数据类型,点不出方法
 
-
-
-![QQ图片20240405140757](https://cdn.jsdelivr.net/gh/Hushyo/img@main/img/QQ%E5%9B%BE%E7%89%8720240405140757.png)而Integer是int的包装类,可以点出方法.
+![QQ图片20240405140757](https://cdn.jsdelivr.net/gh/Hushyo/img@main/img/QQ%E5%9B%BE%E7%89%8720240405140757.png)
+而Integer是int的包装类,可以点出方法.
 
 - 基本数据类型的封装类(也叫引用类型),也用于声明禁止默认值的属性数据
 
@@ -1709,6 +1656,17 @@ Set<User> uSet= new HashSet<>(uList);//list转set
 |    E    |  next()   | 向后移动游标同时返回游标指向的元素 |
 |  void   | remove()  |       移除游标当前指向的元素       |
 
+#### removeIf
+
+移除符合函数表达式的元素，底层基于iterator迭代器实现
+
+```java
+users.removeIf(u -> "SUN".equals(u.getName()));
+//这个 u 可以随意命名，它就跟平常定义函数的形参时给形参起的名字一样
+```
+
+
+
 ### 不可变集合
 
 - 如果一个对象的状态在构造后不能改变，则该对象被认为是不可变的。
@@ -1753,7 +1711,7 @@ return x*x;
 //方法的执行结果仅依赖于方法本身
 //函数式设计↓
 public int multiply(int x){
-return x*x;
+return x*x;                                                                                                                                                                                                            
 }
 ```
 
@@ -1808,7 +1766,35 @@ return x*x;
 
 - groupingBy()/mapping() 分组映射
 - toList() / toSet() / toMap() 将stream结果转化为集合
-- ······
+- ·····
+  **例 toList()**
+
+  ```java
+  APPLES.stream()
+  	  .map(Apple::getColor)//将传入的元素变成元素执行getColor后的结果，返回这个结果流
+  	  .collect(Collectors.toList())//把流转化成List 这一句可以简化为toList()
+  	  .forEach(System.out::println);//对每一个元素使用println
+  ```
+
+  **例 groupBy()**
+  基于给定数据 以 Map<K，List\<T> >分组结合
+
+  ```java
+  Map<Apple.Color,List<Apple> > map = APPLES
+  		.stream()
+  		.collect(Collectors.groupBy(a -> a.getColor()));//按照Map中定义的Key分组,groupBy里面的东西需要匹配Key
+  ```
+
+  **toMap()**
+
+  ```java
+  Map<Integer,Apple> map = APPLES
+  		.stream()
+  		.collect(Collectors.toMap(a->a.getId(),a->a))//基于给定键值来分组
+  //		.collect(Collectors.toMap(APPLES::getId,a->a))等价
+  ```
+
+  
 
 #### forEach()
 
@@ -1876,7 +1862,41 @@ APPLES.forEach( a -> {System.out.println(a.getWeight());});
     					.collect(Collectors.toList());
     ```
 
+- **Stream\<T> map()**
+  映射Stream中元素，基于条件将元素映射为新类型元素
 
+  ```java
+  APPLES.stream()
+  	  .map( a -> a.getWeight()) //a代表传入的元素，a转换为 a.getWeight()
+  	  .collect(Collectors.toList())
+  	  .forEach(i -> System.out.println(i));//对每个传入的元素进行打印操作
+  APPLES.stream()
+  	  .map(Apple::getWeight) //如果对传入的元素使用元素本身就能用的东西，可以这样写 类::方法名 
+  	  //要是传入与Apple类型不符的元素怎么办？报错呗。
+  	  .collect(Collectors.toList())
+  	  .forEach(i -> System.out.println(i));//对每个传入的元素进行打印操作
+  ```
 
+  
 
+- **Stream\<T> sorted()**
+  对Stream中元素排序
 
+  Comparator类提供方法
+  comparing() 基于指定值排序
+  reversed() 倒序
+
+  ```java
+  APPLES.stream() //按重量排序
+  	  .sorted(Comparator.comparing(Apple::getWeight))
+  	  .collect(Collectors.toList())
+  	  .forEach( a -> System.out.println(a.getId()));
+  APPLES.stream() //按Id倒序
+  	  .sorted(Comparator.comparing(Apple::getId).reversed())
+  	  .collect(Collectors.toList())
+  	  .forEach( a -> System.out.println(a.getId()));
+  ```
+
+  
+
+- 其他方法
