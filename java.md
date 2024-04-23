@@ -100,22 +100,6 @@ public class Bicycle{
 
 > this. 表示当前对象的引用,上文setter 参数名字 与 变量名字相同,用this区分它俩,this.gear就是对象中的属性gear.
 
-### 点子
-
-垃圾收集器不会回收没有引用的常量和静态变量
-所以失去引用的对象不是立即被回收的
-回收是自动的，不必手动清除
-
-JVM是编译java源码的环境，不是工具
-
-重写toString实现对象的详细输出，不是toClass
-
-java无法动态修改数组的长度
-
-return 可以声明在没有返回值的方法中，所以 return必须声明在有返回值的方法中 说法错误
-
-this 在类的内部代表当前的对象，不是类本身
-
 ## 修饰符,方法,包
 
 修饰符决定其修饰的 类型/变量/方法 的作用范围 (可访问范围||可见范围)
@@ -1469,16 +1453,16 @@ java15以后,可以输出代码块了,关键词 """ """ 三个双引号括起来
 
 Collection(接口)，表示一组被称为元素的对象
 Collection\<E>接口，用于描述最具通用性的集合，也包含了最具通用性的集合操作方法
-
 Collection接口均继承自Iterable接口，即所有集合类型均支持foreach循环语句
 
 - <font color = blue>**集合里的元素必须是引用类型**</font>（封装基本类型用处这不就来了）
-  集合操作的也是元素所引用的对象，
+  集合操作的也是元素所引用的对象，因此一个对象可以同时存在多个集合中
   如 有一个学生对象，stu1 = new Student(); stu2 = stu1, 把 stu1 和 stu2放入同一个集合里
   操作stu1，修改学生名字为A，再打印stu2的名字，发现也是A，所以操作的是元素引用的对象
   同时也说明List集合允许包含重复元素
-
-
+  
+  null是所有引用类型的默认值
+  集合类型允许包含地址为null的元素
 
 - **\<E>** 泛型. (表示可以是任何类型)
   		创建集合时,必须将泛型具体化为一个  引用类型
@@ -1488,29 +1472,26 @@ Collection接口均继承自Iterable接口，即所有集合类型均支持forea
 > 所有类都是Object类的子类,那么声明Object跟没声明一样
 > 集合不关心里面塞了什么,但是我们关心.我们声明类型后,这个集合只放这个
 
-
-
 - 集合系列操作需要放在主函数里，在类里写是识别不了的
 
 ![QQ图片20240410220320](https://cdn.jsdelivr.net/gh/Hushyo/img@main/img/QQ%E5%9B%BE%E7%89%8720240410220320.png)
 
 ![QQ图片20240410220126](https://cdn.jsdelivr.net/gh/Hushyo/img@main/img/QQ%E5%9B%BE%E7%89%8720240410220126.png)
 
-### 方法
-
-|                 Method                 |        Operation         |
-| :------------------------------------: | :----------------------: |
-|           boolean   add(E,e)           |        添加元素e         |
-|    boolean   addAll(Colletion\<E>c)    |        添加集合c         |
-|          boolean   remove(e)           |        删除元素e         |
-|  boolean   removeAll(Colletion\<E>c)   |        删除集合c         |
-|              void clear()              |           清空           |
-|         boolean    contains(e)         |    判断是否包含元素e     |
-| boolean   containsAll(Collection\<E>c) |    判断是否包含集合c     |
-|          boolean   isEmpty()           |        判断是否空        |
-|              int   size()              |         集合长度         |
-|          T[]  toArray(T[] a)           | 将集合转化为指定类型数组 |
-|        Iterator\<E> iterator()         |        获取迭代器        |
+|    Return    |            Method            |        Operation         |
+| :----------: | :--------------------------: | :----------------------: |
+|   boolean    |           add(E,e)           |        添加元素e         |
+|   boolean    |   addAll(Colletion\<E> c)    | 把集合c的元素全部加进去  |
+|   boolean    |          remove(e)           |        删除元素e         |
+|   boolean    |  removeAll(Colletion\<E>c)   |        删除集合c         |
+|     void     |           clear()            |           清空           |
+|   boolean    |         contains(e)          |    判断是否包含元素e     |
+|   boolean    | containsAll(Collection\<E>c) |    判断是否包含集合c     |
+|   boolean    |          isEmpty()           |        判断是否空        |
+|     int      |            size()            |         集合长度         |
+|     T[]      |        toArray(T[] a)        | 将集合转化为指定类型数组 |
+| Iterator\<E> |          iterator()          |        获取迭代器        |
+|              |       removeIf(lambda)       | 表达式为真时，移除该元素 |
 
 Collection 的 foreach方法运行时 不允许改变集合的长度
 
@@ -1519,136 +1500,84 @@ Collection 的 foreach方法运行时 不允许改变集合的长度
 > 所以不改变索引指针时，可能跳过一些符合条件的元素
 >  1和2都是“sun“，删了1的”sun“后，2移到1，但是下一次搜索的i=2，所以注意删除后i--
 
-### List\<E>
+### List
 
-- 有序,允许包含重复元素的集合.
-  除了继承自Collection的方法,还提供了位置索引的操作方法
+有序,允许包含重复元素的集合.
+除了继承自Collection的方法,还提供了位置索引的操作方法
 
-|         Method          | Operation |
-| :---------------------: | :-------: |
-| void add(int index,E e) |   插入    |
-|  E set(int index,E e)   |   替换    |
-|    E get(int index)     |   获取    |
-|   E remove(int index)   |   移除    |
-|           ···           |    ···    |
+|         Method          |    Operation     |
+| :---------------------: | :--------------: |
+| void add(int index,E e) | 在索引处插入元素 |
+|  E set(int index,E e)   | 根据索引替换元素 |
+|    E get(int index)     | 根据索引取得元素 |
+|   E remove(int index)   | 根据索引移除元素 |
+|           ···           |       ···        |
 
-**ArrayList LinkedList**
-
-List集合的基本实现类有 ArrayList 和 LinkedList 
+List集合的基本实现类有 **ArrayList** 和 **LinkedList** 
 
 - ArrayList 基于对象数组数据结构实现 
 - LinkedList 基于双向链表数据结构实现
 
-> 创建List的时候 new 它俩
->
-> List<Integer> list = new ArrayList<>();
-> List<Integer> list = new LinkedList<>();
+既然是类，那么必然有构造函数
+我们利用构造函数创建集合对象
 
-#### 声明创建
+它们都有三种构造函数，以ArrayList为例
 
-```javascript
-List<type> list = new ArrayList<>();
-//声明List集合类型变量list, <>中声明集合中元素的类型，必须为引用类型
-//后面的尖括号<>可以不填写类型，java自动推导，只填前面的就行
-//ArrayList或是LinkedList都可以，根据具体储存结构选择两种不同的实现类
-List<String> strings;
-List<Integer> numbers;
-//定义好泛型后，加入不符合泛型的元素，会报错，加入元素类型的父类也会报错--父类有子类的特性吗？
-//泛型约束向集合里传入的元素类型
-List<Integer> numbers = new ArrayList<>();
-numbers.add("string");报错
-```
-
-#### ArrayList构造函数
-
-- **ArrayList**() 
-  创建空List集合。默认创建0个元素的对象数组
-- **ArrayList(int length)**
-  创建 length 长度的List集合，长度仅限初始化时使用，后期添加/移除元素时自动更改长度
-- ArrayList(Collection\<E> c) 
-  基于 集合c 创建 List集合
-
-LinkedList的构造函数同理
-
-#### **ArrayList LinkedList**
-
-- LinkedList基于双向链表数据结构实现，每个元素都有两个节点对象保留前后元素的地址
-
-  ArrayList基于数组结构实现
-
-- ArrayList 可以基于索引快速访问对象
-  LinkedList 基于索引访问对象比较慢
-  
-- LinkedList 删除某索引前全部元素快得很，因为有前后指针
-  ArrayList 删除某索引前全部元素比较慢
+|         Constructor         |                    Operation                     |
+| :-------------------------: | :----------------------------------------------: |
+|         ArrayList()         |                    创建空集合                    |
+|      ArrayList(int L)       | 创建长度为L的集合<br />可以随添加/删除元素变长短 |
+| ArrayList(Collection\<E> c) | 用集合C的元素创建集合<br />是简单的集合类型转换  |
 
 
 
-### Map
+1. 创建集合对象
+   <font color = blue>List\<元素类型> 集合名 = new ArrayList<>();</font>
+   List\<Integer> list = new ArrayList<>();
+   List\<Integer> list = new LinkedList<>();
 
-- <font color = blue>**Map不是集合**</font>
+   声明List集合类型变量list, <>中声明集合中元素的类型，集合中的元素必须为引用类型
+   后面的尖括号<>可以不填写类型，java自动推导，只填前面的就行
+   ArrayList或是LinkedList都可以，根据具体储存结构选择构造函数
 
-- Map用于存放键值对(key-value)。
-  通过key值，保存和获取其对应的value值。
-- key是唯一的，每个key只能对应一个value，但是一个value可以对应多个key，键值可以多对一。
+2. 泛型约束向集合里传入的元素类型
+   定义好泛型后，加入不符合泛型的元素，会报错。
+   加入元素类型的父类也会报错--父类有子类的特性吗？
 
-- 添加键值对时，如果key已经存在，则新值覆盖旧值。
-- java通过 key 的hash值判断key是否相同。
-- 支持基本数据类型和任何类型的对象作为key/value。
-- Map没有基于index索引的操作。
-- Map不是Collection的子类，没有继承Iterable的操作，不支持foreach遍历。
-- 支持嵌套： Map<String,Map<Integer,User> >
-- 基本实现类为
-  HashMap<k,v>
-  TreeMap<k,v>
-  HashTable<k,v>
+   ```java
+   List<Integer> numbers = new ArrayList<>();
+   numbers.add("string");报错
+   ```
 
-#### Method
+>  LinkedList基于双向链表数据结构实现，每个元素都有两个节点对象保留前后元素的地址
+> ArrayList基于数组结构实现
+> ArrayList 可以基于索引快速访问对象
+> LinkedList 基于索引访问对象比较慢
+> LinkedList 删除某索引前全部元素快得很，因为有前后指针
+> ArrayList 删除某索引前全部元素比较慢
 
-|  Return   |               Method               |                  Operation                  |
-| :-------: | :--------------------------------: | :-----------------------------------------: |
-|     V     |        put(k key, v value)         |            添加键值对且返回value            |
-|     V     |             get(k key)             | 基于key获取value<br />value不存在则返回null |
-|     V     |           remove(k key)            |           移除键值对并且返回value           |
-|  boolean  |         containsKey(k key)         |                 是否包含key                 |
-|  boolean  |       containsValue(v value)       |                是否包含value                |
-|    int    |               size()               |                 键值对个数                  |
-|  boolean  |             isEmpty()              |                  是否为空                   |
-| default V | getOrDefault(k key,v defaultvalue) |                  **待定**                   |
-|    ···    |                ···                 |                     ···                     |
+
 
 ### Set
 
-- **Set**集合 不包含重复元素（数学中集合的抽象）
-  因此不支持index索引
-- **Set**集合只包含继承自Collection的方法，并且包含重复元素的校验
-- 基本实现类
-  HashSet\<E> 元素无序（基于HashMap确定元素是否重复）。
-  LinkedHashSet\<E> 元素有序
-  TreeSet\<E> 元素有序
-  无论使用有序还是无序的实现类，都没有基于索引的操作方法
-- **Set**集合适合描述逻辑上不能重复的对象：扑克牌，人···
+**Set**集合 不包含重复元素
+特点就是不包含重复元素和不支持索引
+**Set**集合只包含继承自Collection的方法，并且包含重复元素的校验
 
-**Tips:**
-还记得List的第三种构造函数么？基于集合创建List ArrayList(Collection\<E> c) 
-List/Set集合均提供参数为Collection的构造函数，可以将两种集合互相转化
+<font color = red>**基本实现类**</font>
+**HashSet\<E>** 元素无序（基于HashMap确定元素是否重复）。
+**LinkedHashSet\<E>** 元素有序
+**TreeSet\<E>** 元素有序
+无论使用有序还是无序的实现类，都没有基于索引的操作方法
 
-```java
-Set<User> uSet= new HashSet<>();//创建set
-List<User> uList= new ArrayList<>(uSet);//set转list
 
-List<User> uList = new ArrayList<>();//创建list
-Set<User> uSet= new HashSet<>(uList);//list转set
-
-//list转set自动去重
-```
 
 ### Iterators
 
-- Iterator接口，迭代器，允许遍历集合，并且根据需求从中移除元素
-- Iterator\<E> iterator()方法，Collection接口的方法，获取集合对象的迭代器
+迭代器，用于遍历集合，并且可以根据需求从中移除元素
 
-#### Method
+Iterator\<E> iterator()方法，Collection接口的方法，获取集合对象的迭代器
+<font color =blue>集合 .iterator()</font>
 
 | Return  |  Method   |             Operation              |
 | :-----: | :-------: | :--------------------------------: |
@@ -1656,30 +1585,27 @@ Set<User> uSet= new HashSet<>(uList);//list转set
 |    E    |  next()   | 向后移动游标同时返回游标指向的元素 |
 |  void   | remove()  |       移除游标当前指向的元素       |
 
-#### removeIf
 
-移除符合函数表达式的元素，底层基于iterator迭代器实现
 
-```java
-users.removeIf(u -> "SUN".equals(u.getName()));
-//这个 u 可以随意命名，它就跟平常定义函数的形参时给形参起的名字一样
-```
+**removeIf**
+集合里的方法，底层基于迭代器实现
+集合.removeIf(lambda) 移除使表达式为真的元素
 
 
 
 ### 不可变集合
 
 - 如果一个对象的状态在构造后不能改变，则该对象被认为是不可变的。
-
-- 不可变集合是线程安全
+  不可变集合是线程安全
+  不可变类型集合不允许包含 null
 
 - 不可变集合的结构不变，构造速度更快，消耗内存空间更小
   不可变集合的结构不可变（长度也不可变），一旦创建，不可添加/移除元素
   如需改变结构必须创建新的结合（类似数组）
   不可变集合中的元素可以替换，元素对象属性值可以改变
   
-- List.of() / Set.of() / Map.of (),返回空集合对象
-  List.of(e,e,e,e) / Set.of(e,e,e,e) / Map.of (k,v) 基于元素创建并返回相应的集合对象
+- List.of(e,e,e,e) / Set.of(e,e,e,e) / Map.of (k,v) 基于元素创建并返回相应的集合对象
+  如果参数为空如 List.of() 则返回空的集合对象
 
   ```java
   List<Integer> number= List.of(1,2,3,4);
@@ -1688,18 +1614,195 @@ users.removeIf(u -> "SUN".equals(u.getName()));
          }//1,2,3,4
   ```
 
-### Tips
+### Map
 
-- null是所有引用类型的默认值
-- 集合类型允许包含地址为null的元素
-- Map允许声明null为 k / v
-- 不可变类型集合不允许包含 null
+<font color = blue>**Map不是集合**</font>
+
+- Map用于存放键值对(key-value)。
+  通过key值，保存和获取其对应的value值。
+  key是唯一的，每个key只能对应一个value，但是一个value可以对应多个key，键值可以多对一。
+  添加键值对时，如果key已经存在，则新值覆盖旧值。
+- 支持 基本数据类型和任何类型的对象 作为key/value。
+  Map允许声明null为 k / v ，空值也可以作为键值.
+- java通过 key 的hash值判断key是否相同。
+- Map没有基于index索引的操作。
+- 支持嵌套： Map<String,Map<Integer,User> >
+
+**基本实现类**
+
+HashMap <k,v>
+TreeMap <k,v>
+HashTable <k,v>
+
+|  Return   |               Method               |                          Operation                           |
+| :-------: | :--------------------------------: | :----------------------------------------------------------: |
+|     V     |        put(k key, v value)         |                    添加键值对且返回value                     |
+|     V     |             get(k key)             | 基于key获取value<br />value不存在则返回null<br />不能用这个作为if的条件句 |
+|     V     |           remove(k key)            |                   移除键值对并且返回value                    |
+|  boolean  |         containsKey(k key)         |              是否包含key<br />可以用作if条件句               |
+|  boolean  |       containsValue(v value)       |                        是否包含value                         |
+|    int    |               size()               |                          键值对个数                          |
+|  boolean  |             isEmpty()              |                           是否为空                           |
+| default V | getOrDefault(k key,v defaultvalue) |                           **待定**                           |
+|    ···    |                ···                 |                             ···                              |
+
+- Map不是Collection的子类，没有继承Iterable的方法，不支持Iterable的foreach遍历。
+  但是和集合一起支持另外一个foreach遍历
+  这个forEach跟流操作非常相似，参数是函数，对每个元素都使用函数
+  其他集合的函数接收一个参数，Map的函数接收两个参数，key和value
+
+  ```
+  List<User> list = 某集合 
+  
+  list.forEach(a-> System.out.println(a.getName()));
+  Steve
+  Peter
+  David
+  Jack
+  Lily
+  
+  Map<Integer,Integer> map=某Map
+  
+  map.forEach((k,v)->System.out.println(k+" "+v));
+  2018008 66
+  2018006 56
+  2018007 42
+  ```
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### **example**
+
+**Q**:  提供以下可直接使用的User类，直接使用getter/setter方法。编写测试类主函数，模拟创建5个用户，分属3个不同城市创建Set集合，添加以上元素对象。思考，为什么使用Set集合？
+
+1. 创建静态方法，传入封装User类型元素的Set集合，转为List集合返回 
+
+   如何将Set转化为List>?
+
+2. 创建静态方法，传入封装User类型元素的Set集合以及用户ID，基于迭代器在集合移除指定ID用户。 
+
+   如何使用迭代器删除元素?
+
+3. 创建静态方法，传入封装User类型元素的Set集合，将集合中元素以城市名称为键，相同城市用户集合为值分组 等同于 给定User类型，未知的Set集合数据。即不知道集合中有多少user对象，不知道用户居住在多少个城市。 实现以下方法，以城市名称为键，在此城市的所用用户为值，保存为Map
+
+   如何根据键分组
+
+4. 传入测试集合，调用测试
+
+```java
+public class User {
+    private int id;
+    private String name;
+    private String city;
+
+    public User(int id, String name, String city) {
+        this.id = id;
+        this.name = name;
+        this.city = city;
+    }
+	//省略getter和setter
+}
+```
+
+1. 将Set转化为List 
+
+   ```java
+   public static List<User> convertSetToList(Set<User> set){
+          return new ArrayList<>(set);
+       }
+   ```
+
+   利用以集合为参数的构造函数可以轻松实现集合类型间的转换
+
+2. 用迭代器删除元素
+
+   ```java
+   public static void removeUserById(Set<User> set,int id){
+           Iterator<User> iterator=set.iterator();
+           while(iterator.hasNext()){
+               User user=iterator.next();
+               if(user.getId() == id){
+                   iterator.remove();
+               }
+           }
+       }
+   ```
+
+   迭代器是直接定义的，再通过 集合.iterator() 方法获得迭代器对象
+
+3. 以城市为键分组
+
+   ```java
+   public static Map<String,List<User>> groupByCity(Set<User> set){
+       
+           Map<String,List<User>> mapUserCity = new HashMap<>();
+       	//创建待返回对象
+           for(User user : set){//遍历集合
+               String city=user.getCity();
+               if(mapUserCity.containsKey(city)){
+   			//这里不能用 map.get(key)判断是否存在key,因为null不是false
+                   mapUserCity.get(city).add(user);
+               }
+               else{
+                   mapUserCity.put(user.getCity(),new ArrayList<>());
+   			  //添加新的键时添加一个空的集合
+   			  //添加后不要忘了把这个键对应的元素添加到该集合里
+                   mapUserCity.get(user.getCity()).add(user);
+               }
+           }
+           return mapUserCity;
+       }
+   ```
+
+   ​	
+
+4. 输出
+
+   ```java
+   Map<String,List<User>> map=Method.toMap(set);
+           for(String s : map.keySet()){
+               for(User user : map.get(s)){
+                   System.out.println(user.getId() +" " + user.getName() + " " + user.getCity());
+               }
+           }
+   ```
+
+   map是不支持forEach遍历的，所以不能直接遍历map，但是map中有方法 keySet()。
+   keySet()会获取map中所有的键，并返回这些键的集合
+   这个集合是Map的一个视图，对Map的修改，集合也会生效，反之亦然
+   这个集合可以用任意类型的集合接收，也可以直接用
+
+
+
+
+
+
+
+
+
+
 
 ## 函数式编程
 
 函数式编程，函数的输出应该且仅应该依赖函数的本身。
 函数的执行不依赖于函数外部数据。 即 函数要用的数据 只有参数列表传进来的和函数内部的
 不用外部的数据
+
+函数式编程是应用程序设计思想，与面向对象程序编程完全不同
 
 ```java
 //方法执行的结果，不仅依赖于方法本身而且依赖外部的属性
@@ -1723,7 +1826,8 @@ return x*x;
 
   - 闭包，独立于类
   - 匿名，无需声明修饰符，返回类型，函数名
-  - 传递，可以像引用变量类型一样声明，像对象一样传递
+  - **传递，可以像引用变量类型一样声明，像对象一样传递**
+    有些方法的参数是函数，这就用到了lambda表达式
 
 - **语法**
   <font color = blue>(参数列表) -> {body} </font>
@@ -1744,123 +1848,58 @@ return x*x;
 ### Stream
 
 - **流操作**
-  - 集合是存储元素对象的容器，而集合流Stream并不是存储元素的数据结构，
-    而是操作集合元素的管道
+  - 集合是存储元素对象的容器。
+    集合流Stream并不是存储元素的数据结构，而是操作集合元素的管道
   - Stream操作的是集合中的元素，而非集合本身。
     因此，将创建新集合聚合Stream操作的结果，而不影响源集合结构
   - Stream仅会对流过的元素操作一次，因此必须生成一个新的Stream才可以继续操作
     Stream上的操作会被延迟处理，针对一个集合的多次操作会被优化后执行，提高效率
   - **Collection接口中stream()方法可以获取当前集合的Stream对象**
 
-#### 终止操作
-
-终止stream操作处理，消费stream操作产生的结果
-
-- collect() ：聚合在 stream 中间操作的结果
-- forEach() ： 迭代stream的每个元素
-- ······
-
-#### **Collectors类**
-
-用于操作聚合结果的工具类
-
-- groupingBy()/mapping() 分组映射
-- toList() / toSet() / toMap() 将stream结果转化为集合
-- ·····
-  **例 toList()**
-
-  ```java
-  APPLES.stream()
-  	  .map(Apple::getColor)//将传入的元素变成元素执行getColor后的结果，返回这个结果流
-  	  .collect(Collectors.toList())//把流转化成List 这一句可以简化为toList()
-  	  .forEach(System.out::println);//对每一个元素使用println
-  ```
-
-  **例 groupBy()**
-  基于给定数据 以 Map<K，List\<T> >分组结合
-
-  ```java
-  Map<Apple.Color,List<Apple> > map = APPLES
-  		.stream()
-  		.collect(Collectors.groupBy(a -> a.getColor()));//按照Map中定义的Key分组,groupBy里面的东西需要匹配Key
-  ```
-
-  **toMap()**
-
-  ```java
-  Map<Integer,Apple> map = APPLES
-  		.stream()
-  		.collect(Collectors.toMap(a->a.getId(),a->a))//基于给定键值来分组
-  //		.collect(Collectors.toMap(APPLES::getId,a->a))等价
-  ```
-
-  
-
-#### forEach()
-
-是个Stream的方法，参数是 函数，应该传入函数对象
-
-```java
-for(Apple a : APPLES){
- System.out.println(a.getWeight());
-}//原foreach语句
-APPLES.forEach( a -> {System.out.println(a.getWeight());});
-//基于forEach方法以及Lambda表达式
-//a -> {System.out.println(a.getWeight());}是一个函数
-//↑这里只能有一个参数a，因为这个foreach方法只要一个参数
-//而不是因为lambda只能一个参数，lambda可以有多个参数
-```
-
-#### 中间操作
+#### 操作
 
 对集合中元素所执行的具体操作
+操作执行后，将结果置于一个新的Stream，从而允许新的Stream实现后续操作，形成基于Stream的操作链
+
+常用的几个
 
 - Stream filter() : 基于参数选择stream中的元素，过滤
 - Stream map() : 基于stream操作映射为新的类型，映射
 - Stream sorted() ：排序stream中的元素，排序
-- Long count() ：获取stream中元素个数，技术
-- ······
+- Stream forEach()：遍历，操作种类很多，具体什么操作取决于传入的函数
 
-中间操作执行后，将结果置于一个新的Stream，从而允许新的Stream实现后续操作，形成基于Stream的操作链
-
-
+它们的参数都是函数，用Lambda表达式实现
+该函数会被应用到每个元素上
 
 - **Stream\<T> filter()**
-  过滤stream中的元素，表达式结果必须为boolean值，为真则置于新stream，为假则过滤掉
+  过滤stream中的元素，
+  函数表达式返回值必须为boolean值，如果元素应用函数后返回值为真，则置于新stream，为假则过滤掉。
 
-  - 苹果s过滤颜色
+  ```java
+  private static void getStreamMap(Apple.Color c){    
+  Stream<Apple> appleStream = APPLES.stream();
+  //流变量可以像集合一样直接定义
+  //集合.stream()返回值为由该集合元素组成的流   
+      
+  Stream<Apple> colorStream = appleStream.filter(a -> c==a.getColor());
+  //filter()方法返回值仍然是流，用同类型的流变量接收
+  // a->c==a.getColor()  对每个元素都执行条件判断 元素.getColor()==c? 为真则放入新stream中 
+      
+  List<Apple> apples = colorStream.collect(Collectors.toList());
+  //转化为对应的集合对象
+      
+  }
+  
+  //使用方法链可以简单许多
+  List<Apple> apples = APPLES
+  					.stream()
+      				.filter(a - > c == a.getColor())
+  					.collect(Collector.toList());
+  //基于stream的方法链
+  //java17后，.collect(Collector.toList()) 可以写 toList()。等效的			
+  ```
 
-    ```java
-    private static void getStreamMap(Apple.Color c){    
-    Stream<Apple> appleStream = APPLES.stream();
-    //基于集合创建流 APPLES是 Apple类型元素对象的集合
-    //collection类中有方法 stream()获得集合对应的对象
-    //APPLES.stream()获得APPLES的Stream对象
-        
-    Stream<Apple> colorStream = appleStream.filter(a -> c==a.getColor());
-    //中间操作 filter() 括号里的参数是函数，lambda恰好符合这个
-    // a -> c==a.getColor() a只是随意命名的lambda形参名字而已
-        
-    List<Apple> apples = colorStream.collect(Collectors.toList());
-    //stream有方法 collect() 括号内参数是 Collector.toList()/toSet()/toMap().
-    //转化为对应的集合对象
-        
-    }
-    List<Apple> apples = APPLES
-    					.stream()
-        				.filter(a - > c == a.getColor())
-    					.collect(Collector.toList());
-    //基于stream的方法链
-    //java17后，.collect(Collector.toList()) 可以写 toList()。等效的			
-    ```
-
-  - **过滤重量和颜色**
-
-    ```java
-    List<Apple> apples = APPLES.stream()
-    					.filter( a -> a.getColer == c && a.getWeight() >=weight)
-    					.collect(Collectors.toList());
-    ```
+  
 
 - **Stream\<T> map()**
   映射Stream中元素，基于条件将元素映射为新类型元素
@@ -1868,8 +1907,10 @@ APPLES.forEach( a -> {System.out.println(a.getWeight());});
   ```java
   APPLES.stream()
   	  .map( a -> a.getWeight()) //a代表传入的元素，a转换为 a.getWeight()
+  	  //把每一个 元素 都变成 元素.getWeight() 
   	  .collect(Collectors.toList())
-  	  .forEach(i -> System.out.println(i));//对每个传入的元素进行打印操作
+  	  .forEach(i -> System.out.println(i));
+  	  //对每个传入的元素进行打印操作
   APPLES.stream()
   	  .map(Apple::getWeight) //如果对传入的元素使用元素本身就能用的东西，可以这样写 类::方法名 
   	  //要是传入与Apple类型不符的元素怎么办？报错呗。
@@ -1880,10 +1921,8 @@ APPLES.forEach( a -> {System.out.println(a.getWeight());});
   
 
 - **Stream\<T> sorted()**
-  对Stream中元素排序
-
-  Comparator类提供方法
-  comparing() 基于指定值排序
+  对Stream中元素排序，参数为 Comparator.comparing(lambda)
+  comparing() 基于指定值排序(由小到大)
   reversed() 倒序
 
   ```java
@@ -1891,12 +1930,390 @@ APPLES.forEach( a -> {System.out.println(a.getWeight());});
   	  .sorted(Comparator.comparing(Apple::getWeight))
   	  .collect(Collectors.toList())
   	  .forEach( a -> System.out.println(a.getId()));
+  
   APPLES.stream() //按Id倒序
   	  .sorted(Comparator.comparing(Apple::getId).reversed())
   	  .collect(Collectors.toList())
   	  .forEach( a -> System.out.println(a.getId()));
   ```
 
+
+- **Collection collect()** ：
+  聚合流中元素，返回一个集合
+  参数是 Collectors.方法
+  Collector拥有 toList() / toSet() / toMap() 将stream结果转化为它们,to什么,返回值就是什么
+   还有groupingBy()/mapping() 分组映射
+
+- forEach() ： 迭代stream的每个元素
+  **例 toList()**
+
+  ```
+  APPLES.stream()
+  	  .map(Apple::getColor)//将传入的元素变成元素执行getColor后的结果，返回这个结果流
+  	  .collect(Collectors.toList())//把流转化成List 这一句可以简化为toList()
+  	  .forEach(System.out::println);//对每一个元素使用println
+  ```
+
+  **toMap()**
+
+  ```
+  Map<Integer,Apple> map = APPLES
+  		.stream()
+  		.collect(Collectors.toMap(a->a.getId(),a->a))//基于给定键值来分组
+  //		.collect(Collectors.toMap(APPLES::getId,a->a))等价
+  ```
+
+  **groupBy()**
+  基于给定数据 以 Map<K，List\<T> >分组结合
+
+  ```
+  - Map<Apple.Color,List<Apple> > map = APPLES
+    		.stream()
+    		.collect(Collectors.groupBy(a -> a.getColor()));//按照Map中定义的Key分组,groupBy里面的东西需要匹配Key
+  
+  
+  ```
+
+  **forEach()**
+  是个Stream的方法，参数是 函数，应该传入函数对象
+
+  ```java
+   for(Apple a : APPLES){
+     System.out.println(a.getWeight());
+    }//Iterable接口的foreach语句
+    list.stream()
+        .forEach( a -> {System.out.println(a.getWeight());});
+    //Stream的forEach语句
+  
+    //a -> {System.out.println(a.getWeight());}是一个函数
+    //↑这里只能有一个参数a，因为这个foreach方法只要一个参数
+    //而不是因为lambda只能一个参数，lambda可以有多个参数
+  ```
+
+| Return | Method  |      Operation       |
+| :----: | :-----: | :------------------: |
+|  Long  | count() | 获取stream中元素个数 |
+|        |         |                      |
+|        |         |                      |
+
+
+
+
+
+## Optional
+
+java.util.Optional\<T>
+
+为了解决空引用异常引入的容器，用于封装单值元素（只能放一个元素）
+我们可以通过Optional提供的方法，操作其中可能为空值的元素
+
+我们有许多变量，它们可能为空值，当操作这些变量且它们恰巧为空值时，抛出很多异常，我们还要时刻注意它们是不是空值。现在我们用Optional装这些可能为空的元素，操作Optional容器就不用担心因为空值产生的异常
+
+- **创建容器**
+   <font color = red>Optional. **ofNullable (T value) / of(T value)/empty()** </font>
+   Optional类的两个静态方法，用于创建Optional对象
+  使用方法为 Optional 点 ofNullable()/of()
+  可以装入任何类型的元素
+
   
 
-- 其他方法
+  `Optional.of(T value)`用于传入非空元素，返回一个包含value的Optional对象，如果传入的值为null,则抛出异常
+  
+  ```java
+   Optional<String> emailOptional = Optional.of("Hushsama@gmail.com");
+  ```
+
+  `Optional.ofNullable(T value)`用于传入可能为空的元素。返回包含value的Optional对象，如果传入的值为null,则返回空的Optional对象
+  
+  ```java
+   Optional<String> emailOptional = Optional.ofNullable(null);
+  ```
+
+   
+   `empty()`
+   Optional的静态方法，无参，返回不含任何值的Optional对象
+   
+- **执行操作**
+  **<font color = red>ifPresent() / ifPresentOrElse()</font>**
+  两者的参数仍然为函数,无返回值
+
+  `ifPresent()`
+  如果对象中的值存在，则执行函数,不存在就什么也不干
+
+  ```java
+  Optional<String> optional = Optional.of("Hello");
+  optional.ifPresent(a->System.out.println(a));  // 输出 "Hello"
+  ```
+
+  `ifPresentOrElse()`
+  参数为逗号分开的两个函数，如果对象中的值存在，则执行前者，否则执行后者
+
+  ```java
+  Optional<String> optional = Optional.empty();
+  optional.ifPresentOrElse(
+      s -> System.out.println(s),
+      () -> System.out.println("Value is empty")  // 输出 "Value is empty"
+  );
+  ```
+
+- **取值获取操作**
+  <font color = red>**orElse() / orElseGet() / get()**</font>
+  `orElse(T other)`
+  
+  参数是类型为T的值other,用于值不存在时返回
+  如果Optional对象中的值存在，那么返回该值;
+  否则返回other
+  不管值存在还是不存在，返回值不是Optional容器，而是容器中的元素/other
+  
+  ```java
+  Optional<String> optional = Optional.ofNullable(null);
+  String value = optional.orElse("Default Value");
+  System.out.println(value)//Default Value
+  
+  Optional<String> optional = Optional.ofNullable("hello");
+  String value = optional.orElse("Default Value");
+  System.out.println(value)//hello
+  ```
+
+  `orElseGet`(函数)
+  如果值存在则返回值，不执行函数
+  如果不存在则调用有返回值的函数，这个结果必须是容器中同类型的对象
+  
+  函数用无参的lambda表达式
+  因为对象中不存在值时，调用函数也获得不了参数.
+  
+  ```java
+  Optional<String> optional = Optional.ofNullable(null);
+  String value = optional.orElseGet(() -> "Default Value");  // 返回 "Default Value"
+  ```
+
+  `get()`
+  没有参数
+  如果值存在，则返回值；
+  值不存在，抛出异常
+  
+- **空否**
+  <font color = red>**isEmpty( ) / isPresent()**</font>
+  都用来检查Optional对象是否有值
+
+  `isPresent()` 方法：如果值存在返回 `true`，否则返回 `false`。
+
+  `isEmpty()` 方法：如果值不存在返回 `true`，否则返回 `false`
+  
+- **<font color = red>filter() / map() / or()</font>**
+  `Optional<T> filter(函数)`
+  过滤容器中元素，如果Optional对象的值使函数为真，则返回包含该值的Optional对象;
+  否则返回空的Optional对象
+
+  ```java
+  Optional<Integer> optional = Optional.of(10);
+  optional = optional.filter(i -> i > 5);
+  System.out.println(optional.get());  // 输出：10
+  ```
+
+  `Optional<T> map(函数)`
+  如果Optional对象有值，那么返回一个新的Optional对象，新对象的值是旧对象的值执行函数后得到的值；
+  如果Optional对象是空的，则返回空的Optional对象
+
+  ```java
+  Optional<Integer> optional = Optional.of(10);
+  optional = optional.map(i -> i * 2);
+  System.out.println(optional.get());  // 输出：20
+  ```
+
+  `or(供应函数)`
+  如果Optional对象有值，则返回该对象；
+  如果没值，则执行函数且必须同样类型的容器，可以为空
+
+  ```java
+  Optional<Integer> optional = Optional.empty();//获得一个空的optional对象
+  optional = optional.or(() -> Optional.of(20));//由于该对象是空的，获得返回的供应器对象
+  //供应器：()->Optional对象创建函数 这样的lambda
+  System.out.println(optional.get());  // 输出：20
+  ```
+
+  Optional容器对象无法被序列化，不应作为属性，非特殊情况不作为方法的返回类型和参数
+
+  一般用于执行与空引用有关的操作
+
+
+
+
+
+## 异常
+
+### 介绍
+
+异常 指发生在程序执行过程中的，扰乱了程序正常流程的一个事件
+
+当方法执行中发生错误时，方法创建一个对象并且将其传递给  **运行时系统**，该对想法称为 异常对象
+创建一个异常对象并且将其交给运行时系统，称为 **抛出异常**
+异常对象中封装了错误的信息，错误类型，出错时的状态等等
+
+方法抛出异常后，运行时系统会尝试找到一个“方法”处理该异常
+这些“方法”在一个列表中，开始于主函数main，终止于错误方法。这个方法列表称为调用栈
+异常会沿着调用栈逆向往回找能处理它的“方法”，如果找到了适当的异常处理程序，系统将异常对象传递给处理程序，选择合适的异常处理程序，也叫捕获异常
+如果找到main了还处理不了，程序终止
+
+### 两种异常
+
+**Checked Exceptions  受检异常**
+一般是程序与程序控制之外的外部资源互交时产生的错误
+<font color=red>即受检异常是 运行中完全可能出现，但是出现后程序无法解决的问题</font>
+如方法A需要连接网络，但是网络不通。抛出异常，捕获后也解决不了。这就是受检异常
+程序会因为无法解决的问题无法继续执行
+必须为可能出现的受检异常提供处理程序使得程序可以继续进行而非崩溃
+因此！Java要求受检异常必须在调用栈中，显式捕获/处理受检异常，否则无法编译
+
+**Unchecked Exceptions  非受检异常**
+
+由程序中的错误逻辑/代码产生
+或受检异常转换为非受检异常
+比如空指针，数组集合越界，类型转换失败，0作被除数···
+<font color=red>即非受检异常是 运行中不应该出现的但是出现的问题</font>
+它们一般因为代码错误或不严谨产生，不应该捕获异常处理，而是修改代码解决错误
+因此！Java不要求显式捕获处理非受检异常
+
+### 捕获异常
+
+**java.lang.Throwable类**
+所有错误/异常的超类，仅它和它的子类可以被catch语句捕获
+java提供了三种主要异常类型的实现
+1.`java.lang.Error`继承自Throwable，非受检异常
+2.`java.lang.Exception` 继承自Throwable，受检异常
+3.`java.lang.RuntimeExcepiton` 继承自Exception 运行时异常，非受检异常
+
+对于可能抛出异常的方法，必须显式处理异常，否则无法编译
+处理方式：
+1.方法内通过 `try catch`语句捕获处理异常
+2.方法通过`throws`语句声明抛出异常，由调用者处理异常
+
+**try-catch** block
+构建异常处理程序
+将可能引发异常的代码置于try代码块中 也就是code
+
+```
+try{
+	code 
+}catch(ExceptionType name){
+
+}
+```
+
+一个try块可以由多个catch块，将异常处理与try块相关联
+
+```
+try{
+	code 
+}catch(ExceptionType name){
+
+}catch(ExceptionType name){
+
+}
+```
+
+在try和catch块之间禁止定义其他代码
+
+example
+
+```java
+为引发异常的代码单独设置异常处理程序
+try{
+	Files.readString(Path.of("A:/aa.aa"));
+	//显然没有A盘，而且是与外界交互(读取磁盘)，抛出受检异常，类型为IOException
+}catch(IOException e){//捕获该异常
+    System.err.println("捕获IOException异常");//这就是异常处理
+}
+try{
+    Thread.sleep(1000);
+}catch(InterruptedException e){//捕获InterruptedException类型异常
+    System.err.println("捕获InterruptedException异常");//这样处理该异常
+}
+或者放一起，将多个处理程序与其关联
+try{
+	Files.readString(Path.of("A:/aa.aa"));
+    Thread.sleep(1000);
+}catch(IOException e){
+    System.err.println("捕获IOException异常");
+}catch(InterruptedException e){
+    System.err.println("捕获InterruptedException异常");
+}//这个代码块中的异常会自己找能处理自己的处理程序
+另一种放一起的写法，处理程序修改一下
+try{
+	Files.readString(Path.of("A:/aa.aa"));
+    Thread.sleep(1000);
+}catch(IOException | InterruptedException e){//用一个 | 代表或，两个||是 or 
+    System.err.println("捕获IOException异常");
+}
+```
+
+
+
+##  未分类
+
+Java仅支持单返回类型
+
+垃圾收集器不会回收没有引用的常量和静态变量
+所以失去引用的对象不是立即被回收的
+回收是自动的，不必手动清除
+
+JVM是编译java源码的环境，不是工具
+
+重写toString实现对象的详细输出，不是toClass
+
+java无法动态修改数组的长度
+
+return 可以声明在没有返回值的方法中，所以 return必须声明在有返回值的方法中 说法错误
+
+this 在类的内部代表当前的对象，不是类本身
+
+**toString()**
+
+toString()是object类的方法，用于将一个对象转化为字符串并返回
+由于每个类都是object的子类，所以每个类都可以调用 toString方法
+但是toString方法默认返回值是 类的名称＋对象的地址
+
+```
+for(User user:list){
+            System.out.println(user.toString());
+        }
+TemporaryTest.User@c818063
+TemporaryTest.User@5ba23b66
+TemporaryTest.User@3f0ee7cb
+TemporaryTest.User@75bd9247
+TemporaryTest.User@2ff4f00f
+```
+
+但是可以重写，在类里面重写过后可以返回自己想要的
+
+```
+public class User {
+    private int id;
+    private String name;
+    private String city;
+    
+    @Override
+    public String toString(){
+        return id+" "+name+" "+city;//注意返回值是string
+    }
+}
+for(User user:list){
+            System.out.println(user.toString());
+        }
+3 Steve Shanghai
+1 Peter Harbin
+4 David Shanghai
+5 Jack Sichuan
+2 Lily Harbin
+```
+
+这就是重写toString()
+
+
+
+
+
+
+
+
+
