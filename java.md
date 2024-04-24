@@ -2029,10 +2029,10 @@ java.util.Optional\<T>
    Optional<String> emailOptional = Optional.ofNullable(null);
   ```
 
-   
+  
    `empty()`
    Optional的静态方法，无参，返回不含任何值的Optional对象
-   
+  
 - **执行操作**
   **<font color = red>ifPresent() / ifPresentOrElse()</font>**
   两者的参数仍然为函数,无返回值
@@ -2176,20 +2176,31 @@ java.util.Optional\<T>
 
 ### 捕获异常
 
+---
+
 **java.lang.Throwable类**
 所有错误/异常的超类，仅它和它的子类可以被catch语句捕获
-java提供了三种主要异常类型的实现
+java提供了三种主要异常类型的实现(还有很多，这里不写了)
+
+**异常参数类型声明了其可以处理的异常类型，类型必须是Throwable或者其子类**
 1.`java.lang.Error`继承自Throwable，非受检异常
 2.`java.lang.Exception` 继承自Throwable，受检异常
 3.`java.lang.RuntimeExcepiton` 继承自Exception 运行时异常，非受检异常
 
+以及两种方法
+`String getMessage()` 返回异常信息字符串
+`void printStackTrace()  `打印异常栈信息
+
+---
+
+
+
 对于可能抛出异常的方法，必须显式处理异常，否则无法编译
-处理方式：
 1.方法内通过 `try catch`语句捕获处理异常
 2.方法通过`throws`语句声明抛出异常，由调用者处理异常
 
 **try-catch** block
-构建异常处理程序
+<font color = red>**构建异常处理程序**</font>
 将可能引发异常的代码置于try代码块中 也就是code
 
 ```
@@ -2212,12 +2223,13 @@ try{
 }
 ```
 
-在try和catch块之间禁止定义其他代码
+**在try和catch块之间禁止定义其他代码，会无法编译**
 
 example
 
+- 为引发异常的代码单独设置异常处理程序
+
 ```java
-为引发异常的代码单独设置异常处理程序
 try{
 	Files.readString(Path.of("A:/aa.aa"));
 	//显然没有A盘，而且是与外界交互(读取磁盘)，抛出受检异常，类型为IOException
@@ -2229,7 +2241,11 @@ try{
 }catch(InterruptedException e){//捕获InterruptedException类型异常
     System.err.println("捕获InterruptedException异常");//这样处理该异常
 }
-或者放一起，将多个处理程序与其关联
+```
+
+- 或者放一起，将多个处理程序与其关联
+
+```java
 try{
 	Files.readString(Path.of("A:/aa.aa"));
     Thread.sleep(1000);
@@ -2238,16 +2254,175 @@ try{
 }catch(InterruptedException e){
     System.err.println("捕获InterruptedException异常");
 }//这个代码块中的异常会自己找能处理自己的处理程序
-另一种放一起的写法，处理程序修改一下
+```
+
+- 另一种放一起的写法，处理程序修改一下
+
+```java
 try{
 	Files.readString(Path.of("A:/aa.aa"));
     Thread.sleep(1000);
 }catch(IOException | InterruptedException e){//用一个 | 代表或，两个||是 or 
     System.err.println("捕获IOException异常");
 }
+
 ```
 
 
+
+- 块变量作用范围仅在块内，try块的变量在try外都不能用，包括catch。
+  但是在try块前的变量，try和catch都可以用
+- 如果方法有返回值，那么return的位置应该注意一下
+  如果把return放在try块里，要是在return前抛出了异常，那么return就不会再执行了
+  所以要注意一点，有时候方法红了就是因为这个，会没有返回值
+
+<font color = red>**按照级别顺序精确捕获处理异常**</font>
+多个异常处理程序与try块关联
+异常会依次寻找可以处理该异常的程序
+由于异常类型之间存在继承关系，所以可能出现下面的情况
+
+```java
+       try{
+           System.out.println("try内异常前");
+           Files.readString(Path.of("E:\\Gitfile\\java\\a.txt"));
+           System.out.println("try内异常后");
+       }catch(InterruptedIOException e){//InterruptedIOException可以接收IO异常没问题
+           System.out.println("InterruptedIOException");
+       }catch(IOException e){//等待接收InterruptedIOException处理不了的异常
+           System.out.println("IOException");
+       }
+	 //但是把这两个异常处理程序交换一下位置就会报错
+       try{
+           System.out.println("try内异常前");
+           Files.readString(Path.of("E:\\Gitfile\\java\\a.txt"));
+           System.out.println("try内异常后");
+       }catch(IOException e){
+           //IOException是InterruptedIOException的超类
+           //所以IOException可以处理InterruptedIOException类型的异常
+           System.out.println("IOException");
+       }catch(InterruptedIOException e){
+           //所以这个catch永远都不可能执行了，没有意义，标红报错
+           System.out.println("InterruptedIOException");
+       }
+		   //因此异常处理程序的顺序应该精确,不能让某个处理程序没有用武之地
+```
+
+
+
+### 执行顺序
+
+try内未引发异常时，正常执行完try代码块，catch块不执行。
+异常处理程序外继续执行
+
+```java
+public static void main(String[] args){
+       try{
+           System.out.println("try内异常前");
+           Files.readString(Path.of("E:\\Gitfile\\java\\1.txt"));
+           System.out.println("try内异常后");
+       }catch(IOException e){
+           System.out.println("catch块");
+       }
+       System.out.println("try/catch外");
+   }
+
+try内异常前
+try异常后
+try/catch外
+```
+
+try内引发异常，try异常后代码不再执行，程序跳转到catch块执行
+如果异常被捕获处理，则执行catch代码块，异常处理程序外继续执行
+如果异常没有被捕获处理，则程序直接结束，报错，catch不执行
+
+```java
+public static void main(String[] args){
+       try{
+           System.out.println("try内异常前");
+           Files.readString(Path.of("E:\\Gitfile\\java\\a.txt"));
+           System.out.println("try内异常后");
+       }catch(IOException e){//如果这里是Error类型异常，它不能处理IO异常程序会直接报错结束
+           System.out.println("catch块");
+       }
+       System.out.println("try/catch外");
+   }
+try内异常前
+catch块
+try/catch外
+```
+
+**Finally块**
+连接try块或者catch块
+
+- 无异常时执行完try块后执行finally代码块
+- 有异常且捕获处理后 从try跳到catch catch执行完 执行finally代码块
+
+- <font color = red>**无论是否引发异常，是否执行到return语句，finally代码块总会被执行**</font>
+  如果try代码块最后有一个return，且没有引发异常，正常执行try代码。
+  但是在执行return之前，会跳到finally代码块执行完后再执行return
+  因此 无论有没有异常，应该在finally块中清理释放必要的资源空间
+- Finally仅用于释放资源，禁止含有方法本体如return语句。
+  用了return会怎么样？影响是什么？暂不讨论
+
+### 抛出异常
+
+有时代码可以捕获可能发生的异常，但也可能需要方法栈上的其他方法处理异常
+可能引发异常的方法被有不同需求的方法调用，而不同的调用方法对异常的处理方法可能不同
+而引发异常的方法在声明定义时是无法预测的
+在这种情况下，不要捕获异常，由调用方法的人处理异常
+
+当方法不捕获可能发生的受检异常时，方法必须声明 **抛出受检异常**
+在方法声明添加 throws 子句，实现方法抛出异常.
+throws在参数列表后，方法体前，可以抛出多个异常，用逗号隔开
+抛出异常不影响方法签名
+
+```java
+public static void main(String[] args) throws IOException{//上抛一个
+       try {
+           getThorws1();
+       }catch (InterruptedIOException e){//处理一个
+           e.printStackTrace();
+       }
+   }
+
+private static void getThorws1() throws IOException,InterruptedIOException{
+       Files.readString(Path.of("A:\\a"));//可能抛出IO异常
+       Thread.sleep(1000);//可能抛出Thread异常
+   }//方法声明抛出两种异常，调用者要显式处理这些异常，处理不了的继续往上抛
+```
+
+在选择需要抛出的异常类型时，可以选择java提供的异常类西/第三方异常类型/自己定义的异常类型
+可以通过继承相关异常类，实现自定义异常类型
+
+```java
+public class MyException extends RuntimeException{
+	public MyException(String message){
+	super(message);
+	}
+	//继承RuntimeException异常类实现自定义非受检异常
+}
+```
+
+可以在**构造函数/静态/实例方法/方法内的代码块/Lambda表达式**等中声明抛出异常
+通过throw语句，声明抛出一个Throwable或其子类的对象
+抛出去的异常如果没有被捕获，程序中断，不再进行
+抛出的自定义非受检异常无需显式捕获处理
+
+```
+自定义异常
+```
+
+接口，抽象类中的方法
+子类在重写时
+方法原本没有声明抛异常，那么重写时不能声明抛受检异常
+可以抛非受检异常(子类可以编写有误) 
+这一句实质上就是 方法原本没声明，那么重写时不能声明抛异常
+
+方法原本声明抛异常，子类可以不声明
+因为子类重写后可以抛出小于等于父类异常的异常(或者不抛)
+
+> 方法内抛throw
+> 方法上抛throws
 
 ##  未分类
 
