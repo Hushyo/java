@@ -1480,7 +1480,7 @@ Collection接口均继承自Iterable接口，即所有集合类型均支持forea
 
 |    Return    |            Method            |        Operation         |
 | :----------: | :--------------------------: | :----------------------: |
-|   boolean    |           add(E,e)           |        添加元素e         |
+|   boolean    |           add(E e)           |        添加元素e         |
 |   boolean    |   addAll(Colletion\<E> c)    | 把集合c的元素全部加进去  |
 |   boolean    |          remove(e)           |        删除元素e         |
 |   boolean    |  removeAll(Colletion\<E>c)   |        删除集合c         |
@@ -1969,14 +1969,16 @@ return x*x;
   ```
   - Map<Apple.Color,List<Apple> > map = APPLES
     		.stream()
-    		.collect(Collectors.groupBy(a -> a.getColor()));//按照Map中定义的Key分组,groupBy里面的东西需要匹配Key
+    		.collect(Collectors.groupBy(a -> a.getColor()));
+  //按照Map中定义的Key分组,groupBy里面的东西需要匹配Key
+  //返回分组后的map
   
   
   ```
-
+  
   **forEach()**
   是个Stream的方法，参数是 函数，应该传入函数对象
-
+  
   ```java
    for(Apple a : APPLES){
      System.out.println(a.getWeight());
@@ -2035,10 +2037,10 @@ java.util.Optional\<T>
   
 - **执行操作**
   **<font color = red>ifPresent() / ifPresentOrElse()</font>**
-  两者的参数仍然为函数,无返回值
-
+  
   `ifPresent()`
-  如果对象中的值存在，则执行函数,不存在就什么也不干
+  如果对象中的值存在则执行函数,不存在就什么也不干
+  返回boolean值，有值true无值false
 
   ```java
   Optional<String> optional = Optional.of("Hello");
@@ -2047,7 +2049,8 @@ java.util.Optional\<T>
 
   `ifPresentOrElse()`
   参数为逗号分开的两个函数，如果对象中的值存在，则执行前者，否则执行后者
-
+  无返回值 两者的参数为没有返回值的函数
+  
   ```java
   Optional<String> optional = Optional.empty();
   optional.ifPresentOrElse(
@@ -2055,15 +2058,14 @@ java.util.Optional\<T>
       () -> System.out.println("Value is empty")  // 输出 "Value is empty"
   );
   ```
-
+  
 - **取值获取操作**
   <font color = red>**orElse() / orElseGet() / get()**</font>
   `orElse(T other)`
   
-  参数是类型为T的值other,用于值不存在时返回
-  如果Optional对象中的值存在，那么返回该值;
-  否则返回other
-  不管值存在还是不存在，返回值不是Optional容器，而是容器中的元素/other
+  参数是类型为T的值other（T不用声明出来）
+  如果Optioal容器中有值，则返回该值，否则返回other
+  该方法的返回值不是Optional容器，而是容器中的元素或者参数other
   
   ```java
   Optional<String> optional = Optional.ofNullable(null);
@@ -2074,7 +2076,7 @@ java.util.Optional\<T>
   String value = optional.orElse("Default Value");
   System.out.println(value)//hello
   ```
-
+  
   `orElseGet`(函数)
   如果值存在则返回值，不执行函数
   如果不存在则调用有返回值的函数，这个结果必须是容器中同类型的对象
@@ -2086,9 +2088,9 @@ java.util.Optional\<T>
   Optional<String> optional = Optional.ofNullable(null);
   String value = optional.orElseGet(() -> "Default Value");  // 返回 "Default Value"
   ```
-
+  
   `get()`
-  没有参数
+  无参。
   如果值存在，则返回值；
   值不存在，抛出异常
   
@@ -2185,7 +2187,7 @@ java提供了三种主要异常类型的实现(还有很多，这里不写了)
 **异常参数类型声明了其可以处理的异常类型，类型必须是Throwable或者其子类**
 1.`java.lang.Error`继承自Throwable，非受检异常
 2.`java.lang.Exception` 继承自Throwable，受检异常
-3.`java.lang.RuntimeExcepiton` 继承自Exception 运行时异常，非受检异常
+3.`java.lang.RuntimeExcepiton` 继承自Exception 运行时异常，它是**非受检异常**
 
 以及两种方法
 `String getMessage()` 返回异常信息字符串
@@ -2366,15 +2368,18 @@ try/catch外
 
 ### 抛出异常
 
-有时代码可以捕获可能发生的异常，但也可能需要方法栈上的其他方法处理异常
-可能引发异常的方法被有不同需求的方法调用，而不同的调用方法对异常的处理方法可能不同
-而引发异常的方法在声明定义时是无法预测的
-在这种情况下，不要捕获异常，由调用方法的人处理异常
+- 有时代码可以捕获可能发生的异常，但也可能需要方法栈上的其他方法处理异常
+  <font color = grey>即代码里有try-catch，代码可以捕获异常。但有时不写这个，就需要其他方法捕获异常</font>
 
-当方法不捕获可能发生的受检异常时，方法必须声明 **抛出受检异常**
-在方法声明添加 throws 子句，实现方法抛出异常.
-throws在参数列表后，方法体前，可以抛出多个异常，用逗号隔开
-抛出异常不影响方法签名
+- 可能引发异常的方法被有不同需求的方法调用，
+  而不同的调用方法对异常的处理方法可能不同，
+  可引发异常的方法在声明定义时是无法预测的。
+  在这种情况下不要捕获异常，由调用方法的人处理异常。谁调用，谁处理
+
+- 当方法不捕获可能发生的受检异常时，方法必须声明 **抛出受检异常**
+  在方法声明添加 throws 子句，实现方法抛出异常.
+  throws在参数列表后，方法体前，可以抛出多个异常，用逗号隔开
+  <font color = grey>抛出异常不影响方法签名</font>
 
 ```java
 public static void main(String[] args) throws IOException{//上抛一个
@@ -2391,7 +2396,7 @@ private static void getThorws1() throws IOException,InterruptedIOException{
    }//方法声明抛出两种异常，调用者要显式处理这些异常，处理不了的继续往上抛
 ```
 
-在选择需要抛出的异常类型时，可以选择java提供的异常类西/第三方异常类型/自己定义的异常类型
+在选择需要抛出的异常类型时，可以选择java提供的异常类/第三方异常类型/自定义的异常类
 可以通过继承相关异常类，实现自定义异常类型
 
 ```java
@@ -2403,7 +2408,7 @@ public class MyException extends RuntimeException{
 }
 ```
 
-可以在**构造函数/静态/实例方法/方法内的代码块/Lambda表达式**等中声明抛出异常
+**构造函数/静态/实例方法/方法内的代码块/Lambda表达式**等都可以抛异常
 通过throw语句，声明抛出一个Throwable或其子类的对象
 抛出去的异常如果没有被捕获，程序中断，不再进行
 抛出的自定义非受检异常无需显式捕获处理
@@ -2423,6 +2428,470 @@ public class MyException extends RuntimeException{
 
 > 方法内抛throw
 > 方法上抛throws
+
+## IO流
+
+IO流，可以表示不同类型的输入源与输出目标
+输入源和输出目标可以是保存，生成或使用数据的 磁盘文件/外部设备/远程网络等等···
+
+<font color = blue>IO流，支持不同类型的数据：简单字节/原始数据类型/本地化字符/对象等等</font>
+IO流将不同的输入/输出，以相同的方式操作
+创建的不同类型的流有不同的实现方式，不同类型的流又各有各的操作方式
+但是 所有IO流呈现出的都是相同的简单的模式：程序中流入或流出的一系列数据
+**Sum: IO流是数据源/数据目标，输入/输出的抽象表示**
+
+<font color = blue>数据文件基于 byte 保存以及传输，而不是 bit （1 byte = 8 bit，一个字节等于八个二进制位）</font>
+
+8个二进制位（bit）可以用十进制整数0-255表示，因此
+1个字节可以用0-255内的十进制整数表示
+
+### 输入输出
+
+**Input Stream 输入流，用于从数据源读取数据**
+
+**Java.io.InputStream抽象类**
+输入流操作的超类，支持子类以基本字节的方式操作二进制数据
+
+
+<font color = red>**int read(byte[] b) throws IOException, 抽象方法**，</font>由具体子类实现
+
+1. 省略`byte[] b` 参数，一次读取一个字节，返回值为字节的ASCII码值
+   如果到达流末没有可读字节。返回`-1`
+
+2. 写出`byte[] b `参数，尝试读取和数组长度一样多的字节数据，读取的数据存在数组中
+   返回的是实际读取的字节的数量。如果已经到达流的末尾，那么这个方法将返回 `-1`。
+
+   
+
+**Output Stream 输出流，用于将数据写入输出目标**
+
+**Java.io.OutputStream抽象类**
+
+
+<font color = red>**void write(int b) throws IOException, 抽象方法**</font>
+<font color = blue>将十进制数b 按字节写入输出流（十进制数按ASCII码转成字符写入输出流）</font>
+
+
+<font color = red>**void write(byte[] b,int off,int len)**</font>
+<font color = blue>从字节数组b，off位置开始读取，读取len个字节</font>
+
+
+
+> 基于单字节的read()/write()方法，实际开发不会使用，仅用于演示 
+
+![IO](https://cdn.jsdelivr.net/gh/Hushyo/img@main/img/IO.png)
+
+**write()是否指定off与len**
+
+```java
+ public static void getBytetoChar3() throws IOException {
+        try (FileInputStream in = new FileInputStream("E:\\Gitfile\\test.txt");
+             FileOutputStream out = new FileOutputStream("E:\\Gitfile\\out.txt")) {
+            byte[] buffer=new byte[4];
+            int len=0;
+            while ((len = in.read(buffer)) != -1) {
+                out.write(buffer,0,len);
+            }
+        }
+    }
+in : abcdefg
+out: abcdefg
+定义byte buffer 缓冲区4个字节
+首先读取四个字节 abcd  此时buffer=abcd，len=返回值4
+write 从buffer的起始位置0开始读取len 4个字节写入 out=abcd
+
+再继续读 由于buffer字节数组没有清空，新读取的字节会覆盖旧字节
+此时 buffer=efgd，但len=返回值3，read返回值是成功读取的字节个数而不是buffer数组的长度
+write 从buffer 起始位置0开始读取len 3个字符写入 out=abcdefg
+```
+
+```java
+public static void getBytetoChar3() throws IOException {
+        try (FileInputStream in = new FileInputStream("E:\\Gitfile\\test.txt");
+             FileOutputStream out = new FileOutputStream("E:\\Gitfile\\out.txt")) {
+            byte[] buffer=new byte[4];
+            int len=0;
+            while ((len = in.read(buffer)) != -1) {
+                out.write(buffer);
+            }
+        }
+    }
+in : abcdefg
+out: abcdefgd
+    定义byte buffer 缓冲区4个字节
+首先读取四个字节 abcd  此时buffer=abcd，len=返回值4
+write没有指定起始位置和写入长度，则将字节数组buffer全面写入，out=abcd
+
+再继续读 由于buffer字节数组没有清空，新读取的字节会覆盖旧字节
+此时 buffer=efgd，但len=返回值2
+write 再次将buffer数组全部写入 out=abcdefgd
+```
+
+即使有字节数组作为缓冲区，仍需考虑其长度/读取/写入/偏移（起始位置）等操作
+
+InputStream中方法
+<font color = red> **long transferTo(oput) throws IOException方法**</font>
+<font color = blue>**支持直接将输入流转移至一个输出流并返回总字节长度(java9)**</font>
+
+```java
+public static void getBytetoChar4() throws IOException {
+        try (FileInputStream in = new FileInputStream("E:\\Gitfile\\test.txt");
+             FileOutputStream out = new FileOutputStream("E:\\Gitfile\\out.txt"))         {
+            in.transferTo(out);//直接将输入流数据转移到输出流中
+        }
+    }
+```
+
+java提供了字符流操作，支持直接读写文本文件内容，无需手动完成字节到字符的转换
+
+InputStream类中方法
+<font color = red> **byte[] readAllBytes() throws IOException**</font>
+<font color = blue>**直接将流中所有字节读出到字节数组（一次性读取，没有缓存区。不应用于大量数据的输入流）**</font>
+
+```java
+ public static void getBytetoChar5() throws IOException {
+        try (FileInputStream in = new FileInputStream("E:\\Gitfile\\test.txt");
+             FileOutputStream out = new FileOutputStream("E:\\Gitfile\\out.txt")) {
+          byte[] bytes=in.readAllBytes();//输入流中的字节直接读入bytes数组
+            System.out.println(new String(bytes));
+            //String类有字节数组的构造函数,记得new
+        }
+    }
+```
+
+
+
+### 声明与关闭
+
+```java
+public class IO {
+    private static void getByteStreams() throws IOException{
+        FileInputStream in = new FileInputStream(("E:\\Gitfile\\test.txt"));
+        FileOutputStream out = new FileOutputStream("E:\\Gitfile\\out.txt");
+        int c;
+        while((c=in.read())!=-1){
+            //FileInputStream的方法read 返回值是字符的ASCII码值
+            System.out.println("该字节的十进制数："+c);
+            out.write(c);
+            //FileOutputStream的方法write 把整数按ASCII码值转字符后写入输出流
+
+        }
+        //输入输出流的资源一定要关闭
+        in.close();
+        out.close();
+    }
+    
+    public static void main(String[] args){
+        try{
+            IO.getByteStreams();//该方法可能抛出的受检异常要显式处理
+        }catch (IOException e){
+            System.out.println(e.getMessage());
+        }
+    }
+}
+```
+
+
+IO流不会像其他对象因为失去引用而自动释放占用的内存空间
+因此所有IO流必须被正确关闭，否则可能内存溢出
+
+1. 在finally块中关闭资源
+
+2. 在try语句中直接声明使用的资源（在try语句的（）内，而非try语句的 { } 内声明）
+   可以保证无论try是否发生异常，资源在try后均会自动关闭
+   <font color = blue>try（）内声明的**各个变量之间用分号分开哦**</font>
+   try( in; out )
+
+任何实现了java.lang.AutoClosable接口的类型均支持自动关闭，资源的自动关闭与异常处理无关
+
+
+
+在try语句中声明使用的资源后，执行有两种情况:
+
+1. IO流无异常，try执行后自动关闭资源，再之后是finally
+2. IO流引发异常，自动关闭资源，catch，finally--------异常时先关闭资源后catch和finally
+
+```java
+public static void getBytetoChar() throws IOException {
+  try (FileInputStream in =new FileInputStream("E:\\Gitfile\\test.txt");
+       FileOutputStream out = new FileOutputStream("E:\\Gitfile\\out.txt")) {
+       int c;
+       while ((c = in.read()) != -1) {
+           System.out.println("字节十进制:" + c);
+           System.out.println("十进制转为字符:" + (char) c);
+           out.write(c);
+            }
+        }
+    }
+//这个方法抛出IO异常，调用时记得处理该异常哟
+```
+
+Java9 允许在 try（）外创建IO流，只需在（）内声明创建的IO流变量名字即可
+
+```java
+    public static void getBytetoChar2() throws IOException {
+        FileInputStream in = new FileInputStream("E:\\Gitfile\\test.txt");
+        FileOutputStream out = new FileOutputStream("E:\\Gitfile\\out.txt");
+        try (in; out) {//用分号哦
+            int c;
+            while ((c = in.read()) != -1) {
+                System.out.print("字节十进制:" + c+"  ");//print不换行
+                System.out.println("十进制转为字符:" + (char) c);//println自动换行
+                out.write(c);
+            }
+        }
+    }
+字节十进制:97  十进制转为字符:a
+字节十进制:98  十进制转为字符:b
+字节十进制:99  十进制转为字符:c
+字节十进制:100  十进制转为字符:d
+字节十进制:101  十进制转为字符:e
+字节十进制:102  十进制转为字符:f
+字节十进制:103  十进制转为字符:g
+```
+
+
+
+## Files
+
+### Path
+
+文件系统在某种形式的介质上存储和组织文件，以便于检索
+目前文件系统均以树型（或分层）结构存储文件
+但是不同系统描述路径的方式不同
+Linux：
+/home/sally/statusReport
+
+Windows ：
+C：\home\sally\statusReport
+
+CC：linux/unix/网络请求路径等 均用 正斜杠 / 描述且windows也兼容正斜杠路径
+		 因此 windows系统下路径也应用正斜杠描述（反斜杠也不错）
+
+- 绝对路径
+  从根写到该文件 如 G:\Steam\Steamapps\common\ELDEN RING\game\eldenring.exe
+- 相对路径
+  如 eldenring.exe 没有更多信息，就找不到该文件，启动不了艾尔登法环
+  相对路径最终必须转为绝对路径
+  相对路径不能以斜杠开始，那是绝对路径
+  /example/a.txt 绝对路径
+  example/a.txt 相对路径
+
+---
+
+- **java.io.File类**
+  包含耦合了文件路径以及文件操作方法的类,但全部是同步阻塞的（不学了）
+- **java.nio.File类** （nio=new io）
+  将文件路径与文件操作分离，且支持异步非阻塞（学这个）
+  java.nio.file.Path接口，系统文件/目录的路径
+  java.nio.file.Files工具类，包含处理文件操作的方法，如文件的 创建，删除，复制，移动等
+
+---
+
+**Interface Path**
+Path接口可以表示一个绝对的/相对的文件或目录的路径，Path代表一个不依赖于系统的文件路径
+运行在不同操作系统中，Path会把文件路径处理成该操作系统可以识别的路径
+因此开发者使用路径时无需关心操作系统的差异
+Path仅用于描述路径，不包含对路径的操作方法
+
+**创建Path对象：**
+<font color = red> Path Path.of(String path)</font>
+<font color = blue>基于Path接口中的静态方法of利用路径字符串创建Path对象并返回</font>
+`Path path=Path.of("E:/Steam/Steamapps/common/ELDENRING/game/launch.exe");`
+
+<font color = red> Path getFileName()</font>
+<font color = blue>返回文件名或者名曾元素序列的最后一个元素</font>
+即 路径的最后一个的名字，用在上面就是返回包含 launch.exe的Path对象
+<font color = red> Path  getParent() </font>
+<font color = blue>返回父目录的路径</font>
+（谁的父？getFileName的父，最后一个元素的父）
+<font color = red> Path getRoot()</font>
+<font color = blue>返回根目录的路径</font>
+
+```java
+public class Test {
+    public static void main(String[] args){
+        Path path=Path.of("E:/Gitfile/test.txt");
+        System.out.println(path);				//E:\Gitfile\test.txt
+        System.out.println(path.getFileName()); //test.txt
+        System.out.println(path.getParent());	//E:\Gitfile
+        System.out.println(path.getRoot());		//E:\
+    }
+}//Path路径自动转换为当前系统默认的斜杠，如我这是Windows，转化成了反斜杠👆
+```
+
+它们返回值不是Path吗？为什么直接print不报错呢？
+Path重写了toString()方法,因此可以直接打印，但它们的返回值并不是String
+
+**路径拼接**
+Path resolve(Path other) 
+将路径拼接为一个新的路径并返回
+Path Path.of(多个路径字符串)
+基于参数数组拼接成路径
+
+```java
+        Path dir=Path.of("E:/test");
+        Path file=Path.of("input.txt");
+        Path p1=dir.resolve(file);
+        System.out.println(p1);//E:/test/input.txt
+	  //路径拼接自动添加斜杠，不是简单的字符串相加。
+        Path p2=Path.of("E:","test","input.txt");
+	  //基于数组拼接路径也不需要加斜杠，加了也不错，加多了它也会给你改成一个
+        System.out.println(p2);
+
+        System.out.println(p1.equals(p2));//true 重写了equals方法
+```
+
+### Files
+
+下面都是Files类里的静态方法👇
+
+boolean exists(Path path)
+boolean notexists(Path path)
+检查路径是否存在
+
+boolean isDirectory(Path path)
+path是否为目录
+
+```java
+        Path p1 = BASE.resolve("123");
+        System.out.println(p1);//E:\Gitfile\123
+        System.out.println(Files.exists(p1));//false 这个路径根本就不对，最后的文件没有后缀
+        System.out.println("目录"+Files.isDirectory(p1));//目录false
+
+        Path p2=BASE.resolve("test.txt");
+        System.out.println(p2);//E:\Gitfile\test.txt
+        System.out.println(Files.exists(p2));//true
+        System.out.println("目录"+Files.isDirectory(p2));//目录false
+
+        System.out.println(BASE);//E:\Gitfile
+        System.out.println(Files.exists(BASE));//true
+        System.out.println("目录"+Files.isDirectory(BASE));//目录true
+```
+
+**创建目录**
+
+Files类的静态方法
+
+Path createDirectory(Path dir) throws IOException
+创建dir目录，如果目录已存在，异常；如过目录是多级目录，异常
+Path createDirectories(Path dir) throws IOException
+自动创建多级目录，如果目录已存在，那么不管，无异常；目录不存在则创建一个目录
+Path dir = Path.of("D:/test/a/b/c");
+Files.createDirectories(dir); 如果👆目录已存在，则没事；如果不存在，则创建所有不存在目录。比如a,b,c都不存在，那么都创建
+
+**创建文件**
+Path createFile(Path) throws IOException
+基于指定路径创建文件，如果文件已存在则异常
+
+```
+Path dir = Files.createDirectories(BATH.resolve("a"));
+Files.createFile(dir.resolve("a.txt"));
+在D：/test下创建a目录后创建a.txt文件
+```
+
+**复制文件**
+
+Path copy(Path source,Path target,CopyOption option) throws IOException
+默认将文件复制到目标文件，如果文件已存在，则异常，用合适的复制选项可避免异常
+如果source为目录，则不会复制里面的文件，仅创建一个空目录
+
+三个参数，一个是源文件路径，一个是目标路径，一个是复制选项
+
+java.nio.file.StandardCopyOption 枚举实现CopyOption接口，提供三种复制选项
+
+1. ATOMIC_MOVE 将文件作为原子文件系统操作移动
+2. COPY_ATTRIBUTES 将属性复制到新文件
+3. REPLACE_EXISTING 如果存在，替换现有文件
+
+```
+Path source=BASE.resolve("input.txt");
+Path target=BASE.resolve("output.txt");
+Files.copy(source,target,StandardCopyOption.REPLACE_EXISTING);这样用哦
+```
+
+**移动**
+
+Path move(Path source,Path target,CopyOption options) throws IOException
+默认如果目标文件存在则异常，可通过options参数声明移动选项
+如果在同一个目录下移动，相当于文件改名
+
+```
+Path source=BASE.resolve("input.txt");
+Path target=BASE.resolve("output.txt");
+Files.move(source,target);两者目录是一样的，相当于把input.txt 改成了output.txt
+
+Path target=Path.of("D:/test2");
+Files.move(BASE,target);BASE和target目录都是D:,相当于把BASE改名为target
+```
+
+**删除**
+
+void delete(Path path) throws IOException
+删除指定路径，如果路径不存在则异常
+boolean deleteIfExists(Path path) throws IOException
+路径不存在则不删除，返回值是是否删除成功
+
+如果路径是个目录，且目录里面有文件，则两种删除均异常
+
+Stream\<Path> walk(Path path,int depth) throws IOException
+遍历，如果depth不写的话，基于path深度遍历path路径中的所有文件 
+
+```java
+Path dir=Path.of("E:/Doc/a");
+Files.walk(dir).forEach(System.out::println);
+Files.walk(dir,1).forEach(System.out::println);
+Files.walk(dir,2).forEach(System.out::println);
+调用这些方法时记得捕获异常，为了美观没有捕获
+E:\Doc\a
+E:\Doc\a\a.txt
+E:\Doc\a\b
+E:\Doc\a\b\b.txt
+E:\Doc\a\b\c
+E:\Doc\a\b\c\c.txt
+-------------------------
+深度1
+E:\Doc\a
+E:\Doc\a\a.txt
+E:\Doc\a\b
+-------------------------
+深度2
+E:\Doc\a
+E:\Doc\a\a.txt
+E:\Doc\a\b
+E:\Doc\a\b\b.txt
+E:\Doc\a\b\c
+```
+
+ 那么如何删除BASE目录里面的所有文件呢？
+
+```java
+删除指定名称的文件
+Path file = Path.of("a.txt");
+Files.walk(BASE)
+    .filter(p->p.getFileName().equals(file))
+    .forEach(p->{
+        try{
+            Files.delete(p);
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+    });
+删除包含目录的整个文件夹，进入目录后逆向排序然后一个一个删除
+Files.walk(BASE)
+    .sorted(Comparator.reverseOrder())
+    .forEach(p->{
+        System.out.println(p);
+        try{
+            Files.delete(p);
+        }catch(IOException e){
+            e.printStackTree();
+        }
+    });
+```
+
+String Files.readString(Path path,charset) throws IOException
+ 基于指定路径读取文本文件即字符集
 
 ##  未分类
 
