@@ -1,2 +1,4 @@
-package com.example05Inheritance;public class test {
+package com.example05Inheritance;
+
+public class test {
 }

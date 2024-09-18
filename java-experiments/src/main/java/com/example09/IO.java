@@ -73,6 +73,15 @@ public class IO {
         }
     }
 
+    public static void test1() throws IOException{
+        try (FileInputStream in = new FileInputStream("xxx");
+             FileOutputStream out = new FileOutputStream("xxx")){
+            in.close();
+            out.close();
+        }
+    }
+
+
     public static void main(String[] args){
         copyFile("E:/Gitfile/test.txt","E:/Gitfile/out.txt");
     }

@@ -15,17 +15,11 @@ public class Rectangular implements Shape {
     }
 
     @Override
-
     public int getPerimeter() {
-
         return height * 2 + width * 2;
-
     }
-
     public int getArea() {
-
         return height * width;
-
     }
 
 }

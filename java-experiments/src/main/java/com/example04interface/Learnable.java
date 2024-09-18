@@ -1,2 +1,5 @@
-package com.example04interface;public interface Learnable {
+package com.example04interface;
+
+public interface Learnable {
+    void read();
 }

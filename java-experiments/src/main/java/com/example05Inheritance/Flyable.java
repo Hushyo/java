@@ -1,2 +1,5 @@
-package com.example05Inheritance;public interface Flyable {
+package com.example05Inheritance;
+
+public interface Flyable {
+    void fly();
 }

@@ -1449,17 +1449,15 @@ java15以后,可以输出代码块了,关键词 """ """ 三个双引号括起来
 
 ## 集合
 
-将许多元素组合后曾一个单一单元的容器对象，可用于存储/检索/操作/传输/聚合数据
-
 Collection(接口)，表示一组被称为元素的对象
 Collection\<E>接口，用于描述最具通用性的集合，也包含了最具通用性的集合操作方法
 Collection接口均继承自Iterable接口，即所有集合类型均支持foreach循环语句
 
 - <font color = blue>**集合里的元素必须是引用类型**</font>（封装基本类型用处这不就来了）
   集合操作的也是元素所引用的对象，因此一个对象可以同时存在多个集合中
-  如 有一个学生对象，stu1 = new Student(); stu2 = stu1, 把 stu1 和 stu2放入同一个集合里
-  操作stu1，修改学生名字为A，再打印stu2的名字，发现也是A，所以操作的是元素引用的对象
-  同时也说明List集合允许包含重复元素
+  <font color=229453>**如 有一个学生对象，stu1 = new Student(); stu2 = stu1, 把 stu1 和 stu2放入同一个集合里**</font>
+  <font color=229453>**操作stu1，修改学生名字为A，再打印stu2的名字，发现也是A，所以操作的是元素引用的对象**</font>
+  <font color=229453>**同时也说明List集合允许包含重复元素**</font>
   
   null是所有引用类型的默认值
   集合类型允许包含地址为null的元素
@@ -2333,7 +2331,7 @@ try异常后
 try/catch外
 ```
 
-try内引发异常，try异常后代码不再执行，程序跳转到catch块执行
+try内引发异常，try异常处后面的代码不再执行，程序跳转到catch块执行
 如果异常被捕获处理，则执行catch代码块，异常处理程序外继续执行
 如果异常没有被捕获处理，则程序直接结束，报错，catch不执行
 
@@ -2428,6 +2426,390 @@ public class MyException extends RuntimeException{
 
 > 方法内抛throw
 > 方法上抛throws
+
+
+
+## 线程
+
+线程（Threads）是进程中的一个运行实体。是可以被系统独立调度分派的基本单位，是程序执行流的最小单元。线程是调度的抽象
+系统创建程序进程后，启动执行该进程的主执行线程。当程序中的所有线程终止（而非仅主线程终止），进程随之终止
+如果说进程是公司，那么线程就是干活的员工
+8核16线程cpu 就是16个干活的（物理层面）但是由于干的太快了，感觉到同时干的事情不止16件，因为它这个干一会儿那个干一会儿
+
+### 构造
+
+**Runnable接口**  定义预执行的任务
+接口中仅定义了唯一抽象方法run()
+Runnable实现类实现该方法，这个方法的实现就是线程执行的任务
+通过将`Runnable对象`传递给`Thread线程构造函数`实现创建线程，创建线程后用线程内的start方法启动线程
+
+```java
+public class HelloRunnable implements Runnable{
+@override
+    public void run(){//实现类重写run方法，这个就是线程start要执行的任务(这里只是模拟线程)
+        System.out.println("hello");
+    }
+}
+public class Test{
+    public static void main(String[] args){
+        Thread t = new Thread(new HelloRunnable);
+        t.start();//线程.start执行的就是实现类中重写的run方法
+        //hello
+    }
+}
+```
+
+**Thread类**  定义预执行的线程
+Thread类实现了Runnable接口，但是实现的方法run（）方法为空；
+定义实现类继承Thread类，重写run()方法实现任务
+执行start()方法启动线程
+
+```java
+public class Hello extends Thread{
+    @override
+    public void run(){
+        System.out.println("hello");
+    }
+}
+public class Test{
+    public static void main(String[] args){
+        new Hello().start();//new创建线程启动对象，用start启动线程
+        //hello
+    }
+}
+```
+
+以上两种方法均需要调用Thread的start方法启动新线程
+run（）方法执行完毕后，自动停止线程
+Thread的构造函数可以是Runnable对象，可以是继承自Thread的子类，也可以是无参lambda表达式，表达式的body就是run的内容，lambda在中断那儿
+
+### 挂起
+
+**Thread.sleep() throws InterruptedException方法**
+挂起当前线程，使线程进入非可执行状态（睡眠），cpu不会分配给线程执行的时间片，导致当前线程停止一段指定的时间
+sleep时间并不能保证准确，假如我设置5s后回来执行，但不可能刚好五秒（底层逻辑），指挥大于五秒后回来，说成大于等于五秒
+sleep周期可以通过中断（Interrupt）来终止
+
+sleep  放大问题的发生性
+有些并发问题，需要放大才能看到。
+
+```java
+System.out.println("main thread running");
+new Thread(new Runnable(){//匿名内部类
+    @override
+    public void run(){
+        int amount=5;
+        for (int i=0;i<amount;i++){
+            System.out.println("i");
+            try{
+                Thread.sleep(1000);//每次执行后sleep1000ms
+            }catch(InterruptedException e)
+        }
+    }
+}).start();
+System.out.println("main thread ending");
+main thread running
+main thread ending
+0 1 2 3 4
+为什么是这个顺序？主线程执行静态方法中创建子线程，主线程继续执行，子线程继续执行。
+但是线程的执行/启动顺序默认无法确定
+```
+
+
+
+**Interrupts**
+中断（Interrupts），表示线程应停止正在执行的操作，并执行其他操作
+中断不是终止，也做不到终止线程。中断之后干什么取决于线程，线程决定下一步做什么
+中断如何实现？
+一个线程调用interrupt()方法，在线程中抛出一个异常，抛出异常后要处理异常
+异常处理后干什么由catch中语句决定，如果是return，那就是不干了，如果是print，那打印完接着干
+
+```java
+Thread t = new Thread(()->{
+    for(int i = 0;i<5;i++){
+        System.out.println(i);
+        try{
+            Thread.sleep(1000);
+        }catch(InterrunptedException e){
+          System.out.println("Interrupt");   
+        }
+    }
+});
+t.start();
+Thread.sleep(2000);//主线程sleep，确保子线程开始执行
+t.interrupt();//线程对象调用interrupt方法中断
+0 1 interrupt 2 3 4
+通过lambda表达式构造线程，线程执行是循环打印，中断后抛出异常，解决后只打印interrupt,打印完接着执行线程内容
+```
+
+**join（）方法**
+线程强制执行，插队
+使当前线程暂停执行，直到插队线程终止
+与`sleep()`相同，通过`InterruptedException异常`响应中断
+
+B.join()就是B线程插队执行
+
+```java
+System.out.println("main thread running");
+Thread t = new Thread(()->{
+    for(int i = 0;i<5;i++){
+        System.out.println(i);
+        try{
+            Thread.sleep(1000);
+        }catch(InterrunptedException e){
+        }
+    }
+});
+t.start();
+t.join();//在A线程中，A的子线程B执行join()方法，则B线程插队执行，A线程挂起，B执行完A再执行
+System.out.println("main thread ending");
+main thread running
+0 1 2 3 4
+main thread ending
+```
+
+### 通信
+
+线程间主要通过访问共享数据实现通信
+非常有效，但是可能会产生两种错误：线程冲突与内存一致性错误
+一个语句 num++ 分为三部，取出当前的num值，将取出的值加一，将加完后的值储存到num
+那么多个线程同时进行时，操作可能会交替，比如线程1取值，还没加的时候线程2也取值，就导致结果错误
+多个线程同时访问一个数据产生的错误
+java.util.concurrent.CountDownLatch类
+允许多个线程等待的同步工具
+通过调用CountDownLatch(int num)构造函数构造计数器对象
+
+countDown()方法
+减少锁计数器的1计数，计数达到0时，释放所有等待的线程
+await() throws InterruptedException方法
+任何执行此方法的线程开始等待。直到锁计数器递减到0。除非执行中断
+在哪个线程里执行await，哪个线程开始等待
+
+```java
+public class Counter(){
+    private Random r = new Random();
+    public int c;
+    public void increment(){
+        try{
+            Thread.sleep(r.nextInt);//使每个线程调用该方法时均可能产生不同的执行时间
+            c++;
+        }catch(InterruptedException e){
+            e.printStackTrace();
+        }
+    }
+}
+Counter counter = new counter();
+int count = 800;
+CounterDownLatch latch = new CounterDownLatch(count);//创建一个800的锁计数器
+for(int i = 0; i<count;i++){//创建800个线程，都开始执行，但是由于每个线程sleep的时间不一样，导致两个线程可能取得是同一个值
+    new Thread(()->{//为线程对象定义任务，1：调用increment方法；2：使计数器减一
+        counter.increment();
+        latch.countDown();
+    }).start();
+}
+latch.await();//主线程正在等待，直到800个线程执行完
+System.out.println(counter.c);//798,不是800，代表线程冲突喽
+```
+
+### 同步
+
+线程同步：多个线程操作同一个资源
+并发：一个对象被多个线程操作（五一抢票，两个银行一起取钱）
+
+**队列**
+处理多线程问题时，多个线程访问同一个对象，并且某些线程还想修改这个对象。
+这个时候我们就需要线程同步。
+线程同步其实是一种等待机制，多个需要同时访问此对象的线程进入这个对象的等待池形成队列，一个一个来
+**锁**
+假如一群人上厕所，要排队，队列已经排好了，但是一群人挤进去了也不安全，所以厕所门有锁，锁上就保证安全
+线程只有队列时还不够安全，还要加上锁（程序来源于生活）
+每个对象都有一把锁，也只有一把锁，就是用于线程同步的。
+当一个线程获得对象的排它锁后独占资源，其他线程必须等待。使用后释放锁
+两个线程调用一个对象中两个不同的同步方法，因为先调用的线程已经独占对象了，后调用的线程得等着
+
+
+
+java提供了两种基本的同步方式：
+同步方法和同步语句（代码块）
+
+**方法同步**
+使用synchronized关键字声明在方法返回类型前面
+声明了同步后的方法，必须获得当前对象的锁才能执行，否则线程会阻塞
+方法一旦执行就独占该锁，直到该方法返回才释放此锁
+
+```java
+public synchronized void increment(){//同时只能由一个线程调用
+    try{
+        Thread.sleep(r.nextInt);
+        c++;
+    }catch(InterruptedException e){
+        e.printStackTrace;
+    }
+}
+Counter counter = new Counter();
+int count = 800;
+CountDownLatch latch = new CountDownLatch(count);
+for(int i=0;i<count;i++){
+    new Thread(()->{
+        counter.increment();
+        latch.countDown();
+    }).start();
+}
+latch.await();
+System.out.println(c);//800
+```
+
+声明同步就是使用方法同步锁，同一时间只能有一个线程执行此方法
+
+```java
+public class Account{
+    public int a;
+    public int b;
+    public synchronized void addA(){//A同步方法
+        try{
+            Thread.sleep(1000);
+            a++;
+           }catch//省略
+    }
+    public void addB(){//B非同步方法
+        try{
+            Thread.sleep(1000);
+            b++;
+        }catch
+    }
+}
+
+int c =1800;
+CountDownLatch latch = new CountDownLatch(c);
+Account a = new Account();
+for(int i=0;i<c/2;i++){
+    new Thread(()->{
+        a.addA();
+        latch.countDown();
+    }).start();
+}//这900个线程调用同步方法addA时有条有序，不争不抢
+for(int i=0;i<c/2;i++){
+    new Thread(()->{
+        a.addB();
+        latch.countDown();
+    }).start();
+}//这900个线程调用非同步方法addB时争抢数据，没加上
+latch.await();
+System.out.println(a.a);//900
+System.out.println(a.b);//825
+```
+
+一个方法总不能全部声明成同步的，锁的太多浪费资源，比如方法内只读方法不用锁，锁上修改方法就可以了
+
+
+**synchronized语句（代码块）**
+假如多个用户在一个银行账户里取钱，用户里声明同步取钱方法get，如果取钱数大于剩余数100，那么就不给去
+A用户执行get50，B用户紧接着执行get100，此时两个用户各自被锁住，假如B用户在A用户取完钱并更新剩余数之前获取到了剩余数100，那么B用户也执行
+最后剩余数是-50
+我们注意到，取钱方法get锁错对象了，应该锁住他们的账户的。得出👇
+
+​		**使用synchronized方法默认锁的是this,也就是当前对象**。
+
+synchronized(Obj){ 代码块 } 可以自定义锁任何对象
+Obj称之为同步监视器
+Obj可以是任何对象，但是推荐使用要共享的资源作为同步监视器
+同步方法中无需指定同步监视器，因为同步方法的监视器就是this
+
+同步监视器的执行过程
+第一个线程访问，锁定同步监视器，执行其中代码
+第二个线程访问，同步监视器锁定，无法访问
+第一个线程访问完毕，解锁同步监视器
+第二个线程访问，同步监视器解锁，锁定后访问
+
+如果把get方法改用同步代码块，就可以避免这些问题 synchronized(账户){get方法} 再执行get方法时就正常了
+
+```
+public void run(){
+	synchronized(account){
+	public int get()....
+	}
+}
+```
+
+抽象的东西不能声明同步。同步是对实现了的东西的约束，而不是对未实现的东西使用的
+但是抽象方法在重写时可以声明同步，因为重写就是实现抽象方法嘛。
+构造函数不能同步。两个线程不可能创建同一个对象，因此构造函数声明同步无意义，所以不允许声明同步
+
+
+
+### 原子操作
+
+原子性操作：要么完全执行，要么不执行
+对于引用变量和大多数基本变量来说，读取和写入均为原子性操作（i++不是原子性操作，它分为三步，拿出来，加一，放回去，这三步各自是原子性操作）
+
+线程从主内存复制变量副本，并保存在本地缓存（CPU高级数据缓存）
+线程基于变量完成操作，操作完成后将结果写回主内存
+java的内存模型无法保证CPU高速缓存中的变量何时写回主内存，内存不一致性
+即线程二拿到的可能是线程一还没来得及写回主内存的变量，A经过线程I后本要变成B，但是线程II太快了，直接就拿到了A，没能拿到B
+
+利用`volatile`关键字（仅用于修饰变量）
+可以保证变量的可见性，即各线程不在本地缓存volatile变量的副本，每次使用即时从主内存加载变量
+
+volatile虽然可以保证变量的可见性，但是无法保证并发执行操作的原子性；没有使用锁，可以保证并发的执行性能
+Synchronization可以保证并发操作的原子性和变量可见性，但是基于锁的同步，会严重不限制系统并发处理性能
+
+使用同步锁定，会严重降低系统的并发处理性能，如须使用同步，尽可能使用锁定对象的同步语句；
+因为锁定实例方法会影实例的其他同步方法，降低性能
+
+
+
+### Lock
+
+同步代码基于简单的锁实现。这种锁容易使用，但是有更多的限制
+`java.util.concurrent.locks.Lock`接口
+
+Lock是用于空值多线程访问共享资源的工具，提供对共享资源的独占访问权限：
+一次只有一个线程可以获取该锁，并且对共享资源的访问优先获取该锁
+
+Lock提供比同步操作更广泛/更灵活的锁定操作
+`ReentrantLock`实现类，重入锁。
+支持对共享资源重复枷锁
+`ReadLock/WriteLock`实现类
+
+定义: Lock lock = new ReentrantLock();
+		   类型 名字         new一个实现类的构造函数
+
+```java
+public class Counter{
+    private static int c = 0;
+    private static final Random r = new Random();
+    private static final Lock lock = new ReentrantLock();
+    public static void increment(){
+        try{
+            Thread.sleep(r.renxInt(50));
+            lock.lock();//调用锁方法
+            c++;
+        }catch(InterruptedException ignored){
+            
+        }finally{
+            lock.unlock();//解锁
+        }
+    }
+}
+int count = 8000;
+CountDownLatch latch = new CountDownLatch(count);
+for(int i=0;i<count;i++){
+    new Thread(()->{
+        Counter.increment;
+        latch.countDown();
+    }).start();
+}
+latch.await();
+Sout(Counter.value())
+基于Lock的实现，无需锁定方法或者对象，可锁定任意代码区域
+在操作结束后的finally块内解放锁
+```
+
+在旧版本的多线程处理中，由Runnable对象定义的需要线程完成的任务，与线程对象本身之前存在紧密联系
+这只适用于小型应用程序，在大型应用程序中，将线程的创建/管理从应用程序中分离解耦是有意义的
+多线程频繁创建在高并发及大数据量时，是非常消耗资源的。
+因此在新的并发API中提供了封装这些功能的对象以及线程池机制实现
+
 
 ## IO流
 
@@ -2803,6 +3185,10 @@ java.nio.file.StandardCopyOption 枚举实现CopyOption接口，提供三种复�
 1. ATOMIC_MOVE 将文件作为原子文件系统操作移动
 2. COPY_ATTRIBUTES 将属性复制到新文件
 3. REPLACE_EXISTING 如果存在，替换现有文件
+4. ATOMIC_MOVE 将文件作为原子文件系统操作移动
+5. COPY_ATTRIBUTES 将属性复制到新文件
+   1. REPLACE_EXISTING 如果存在，替换现有文件
+
 
 ```
 Path source=BASE.resolve("input.txt");

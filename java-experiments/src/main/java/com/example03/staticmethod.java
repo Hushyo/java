@@ -1,6 +1,6 @@
 package com.example03;
 
-public class Main {
+public class staticmethod {
     public static void main(String[] args){
         Test.staticprint();// 静态方法直接调用
         //Test.nonstaticprint 是不可以调用的,编译器会建议把			  nonstaticprint前加static,改成静态方法

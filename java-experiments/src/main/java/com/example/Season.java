@@ -1,2 +1,5 @@
-package com.example;public enum Season {
+package com.example;
+
+public enum Season {
+    WINTER
 }
