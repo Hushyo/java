@@ -3341,9 +3341,78 @@ for(User user:list){
 
 
 
+##  工厂模式
 
+方法先设置接口
 
+```
+public interface TeacherService {
+    public List<Teacher> listTeachers(String type);
 
+    public Teacher getTeacherById(String type,int id);
+}
+```
 
+然后创建实现类
 
+```
+public class TeacherServiceImpl implements TeacherService {
+    @Override
+    public List<Teacher> listTeachers(String type) {
+        String sql="select * from "+type;
+        List<Teacher> teachers=new ArrayList<>();
+        try(Connection connection= DataSourceUtils.getConnection();
+            PreparedStatement ps=connection.prepareStatement(sql);
+            ResultSet rs=ps.executeQuery()) {
 
+            while(rs.next()){
+                Teacher teacher = new Teacher(rs.getInt("tid"),
+                        rs.getString("tname"),
+                        rs.getString("tintroduction"),
+                        rs.getString("timg"));
+                teachers.add(teacher);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return  teachers;
+    }
+
+    @Override
+    public Teacher getTeacherById(String type, int id) {
+
+        String sql="select * from "+type+" where tid=?";
+        Teacher teacher=null;
+
+        try(Connection connection= DataSourceUtils.getConnection();
+            PreparedStatement ps=connection.prepareStatement(sql)){
+            ps.setInt(1,id);
+            try (ResultSet rs=ps.executeQuery()){
+                if(rs.next()){
+                    teacher = new Teacher(rs.getInt("tid"),
+                            rs.getString("tname"),
+                            rs.getString("tintroduction"),
+                            rs.getString("timg"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return  teacher;
+    }
+}
+```
+
+在方法工厂里写上
+
+```
+public class ServiceFactory {
+private static final TeacherService teacherService= teacherCreate();
+ 
+ private static TeacherService teacherCreate(){return new TeacherServiceImpl();}
+ }
+```
+
+回顾一下知识吧，首先接口是不能实例化的，变量 teacherService  的类型不是接口，而是接口的实现类，前面的接口只起到限制作用
+限制后面的对象只能使用接口中的方法。
+工厂类在第一次加载时，由于这里给变量teacherService进行了初始化，而初始化的内容是调用了函数，这个函数返回接口实现类对象
